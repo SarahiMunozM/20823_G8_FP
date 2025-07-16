@@ -116,7 +116,7 @@ int main() {
         printf("3. Buscar por ID\n");
         printf("4. Eliminar Productos\n");
         printf("5. Salir\n");
-        printf("Opcion: ");
+        printf("Indique que desea realizar: ");
         scanf("%d", &opcion);
         getchar(); // Limpia el buffer
 

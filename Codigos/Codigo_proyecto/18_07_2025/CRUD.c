@@ -11,7 +11,7 @@
 #define ARCHIVO "inventario.txt"
 #define ARCHIVO_VENTAS "ventas.txt"
 
-// Estructura del producto - RF1, RF2, RF3, RF4, RF5, RF6
+// Datos del Produto
 typedef struct {
     char id[20];
     char Producto[50];
@@ -19,7 +19,7 @@ typedef struct {
     int Cantidad;
 } Estudiante;
 
-// Estructura para el registro de ventas - RF7, RF8
+// Estructura para el registro de ventas
 typedef struct {
     char id[20];
     char Producto[50];

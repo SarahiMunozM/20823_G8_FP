@@ -1,0 +1,28 @@
+Lana Escolar;40;0.50
+Marcador Permanente Azul;8;0.70
+Marcador Permanente Azul Economico;10;0.50
+Marcador Permanente Negro;0;0.70
+Marcador Permanente Negro Economico;0;0.50
+Marcador Permanente Rojo;11;0.70
+Marcador Permanente Rojo Economico;19;0.50
+Marcador Permanente Verde;20;0.70
+Marcador Permanente Verde Economico;1;0.50
+Marcador Tiza Liquida Azul;0;0.70
+Marcador Tiza Liquida Azul Economico;0;0.50
+Marcador Tiza Liquida Celeste;1;0.70
+Marcador Tiza Liquida Morado;2;0.70
+Marcador Tiza Liquida Naranja;16;0.70
+Marcador Tiza Liquida Negro;0;0.70
+Marcador Tiza Liquida Negro Economico;0;0.50
+Marcador Tiza Liquida Rojo;0;0.70
+Marcador Tiza Liquida Rojo Economico;14;0.50
+Marcador Tiza Liquida Rosado;11;0.70
+Marcador Tiza Liquida Verde;5;0.70
+Pistola de silicona;4;4.30
+Reglas Flexible;23;0.75
+Tempera Acrílica x6;4;1.85
+Tempera Económica x12;6;1.20
+Tempera Pastel x12;0;3.50
+Tempera Pastel x6;0;1.95
+Tempera x1;26;0.45
+Tijera;24;0.50

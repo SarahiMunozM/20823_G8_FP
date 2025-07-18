@@ -1,0 +1,8 @@
+o	RF1: El programa debe permitir hacer el ingreso de datos necesarios para crear un producto nuevo, validar que el id sea único y confirmar que el producto se agregó exitosamente.
+o	RF2: El programa deberá ingresar el producto al listado del inventario.
+o	RF3: El programa deberá eliminar el producto del listado del inventario.
+o	RF4: El programa deberá visualizar un listado en orden alfabético de todos los productos ingresados.
+o	RF5: El programa deberá realizar la búsqueda de los productos por su nombre en el listado.
+o	RF6: El programa deberá presentar las existencias de los productos y alertar de la falta del stock.
+o	RF7: El programa deberá presentar la cantidad de productos vendidos.
+o	RF8: El programa deberá dar a conocer el registro de ventas realizado en el día.

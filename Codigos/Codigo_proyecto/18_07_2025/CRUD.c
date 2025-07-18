@@ -9,19 +9,17 @@
 #define MAX_PRODUCTOS 1000
 #define ARCHIVO "inventario.txt"
 
-// Definición de la estructura Productos
 typedef struct {
-    char id[20];       
-    char Producto[50]; 
-    char Marca[50];    
-    int Cantidad;      
+    char id[20];
+    char Producto[50];
+    char Marca[50];
+    int Cantidad;
 } Estudiante;
 
-// Lista global de productos
 Estudiante lista[MAX_PRODUCTOS];
 int cantidad = 0;
 
-// Función para guardar los datos en el archivo
+// RF2: Guardar en archivo
 void guardarEnArchivo() {
     FILE *archivo = fopen(ARCHIVO, "w");
     if (archivo == NULL) {
@@ -38,11 +36,11 @@ void guardarEnArchivo() {
     fclose(archivo);
 }
 
-// Función para cargar datos desde el archivo al iniciar
+// RF2: Cargar desde archivo
 void cargarDesdeArchivo() {
     FILE *archivo = fopen(ARCHIVO, "r");
     if (archivo == NULL) {
-        return; // No hay archivo todavía, se considera normal
+        return;
     }
 
     while (fscanf(archivo, "%[^|]|%[^|]|%[^|]|%d\n",
@@ -56,11 +54,39 @@ void cargarDesdeArchivo() {
     fclose(archivo);
 }
 
-// Función para agregar Productos
+// RF5: Buscar por nombre de producto
+int buscarPorNombre(char nombre[]) {
+    for (int i = 0; i < cantidad; i++) {
+        if (strcmp(lista[i].Producto, nombre) == 0 && strlen(lista[i].id) > 0) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+// RF1: Verifica que el ID sea único
+int idUnico(char id[]) {
+    for (int i = 0; i < cantidad; i++) {
+        if (strcmp(lista[i].id, id) == 0 && strlen(lista[i].id) > 0) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+// RF1: Crear producto
 void crearEstudiante(Estudiante *e) {
-    printf("Ingrese ID: ");
-    fgets(e->id, 20, stdin);
-    e->id[strcspn(e->id, "\n")] = '\0';
+    while (1) {
+        printf("Ingrese ID: ");
+        fgets(e->id, 20, stdin);
+        e->id[strcspn(e->id, "\n")] = '\0';
+
+        if (idUnico(e->id)) {
+            break;
+        } else {
+            printf("Error: El ID ya existe. Intente nuevamente.\n");
+        }
+    }
 
     printf("Ingrese Producto: ");
     fgets(e->Producto, 50, stdin);
@@ -72,19 +98,25 @@ void crearEstudiante(Estudiante *e) {
 
     printf("Ingrese Cantidad: ");
     scanf("%d", &e->Cantidad);
-    getchar(); // Limpia el buffer del teclado
+    getchar();
+
+    printf(GREEN "Producto agregado exitosamente.\n" RESET); // Confirmación RF1
 }
 
-// Función para mostrar los datos de un Producto
+// RF1 y RF6: Mostrar producto con alerta de stock bajo
 void mostrarEstudiante(Estudiante e) {
     printf("\nID: %s\n", e.id);
     printf("Producto: %s\n", e.Producto);
     printf("Marca: %s\n", e.Marca);
     printf("Cantidad: %d\n", e.Cantidad);
+
+    // RF6: Alerta por bajo stock
+    if (e.Cantidad <= 5) {
+        printf("\x1b[31m¡ALERTA: Stock bajo!\x1b[0m\n");
+    }
 }
 
-// Función para buscar un Producto por ID
-// Retorna la posición si lo encuentra, -1 si no existe
+// RF5: Buscar por ID
 int buscarPorID(Estudiante lista[], int n, char id[]) {
     for (int i = 0; i < n; i++) {
         if (strcmp(lista[i].id, id) == 0) {
@@ -94,7 +126,7 @@ int buscarPorID(Estudiante lista[], int n, char id[]) {
     return -1;
 }
 
-// Función para eliminar un Producto (vacía el registro)
+// RF3: Eliminar producto
 void eliminarEstudiante(Estudiante *e) {
     strcpy(e->id, "");
     strcpy(e->Producto, "");
@@ -102,49 +134,61 @@ void eliminarEstudiante(Estudiante *e) {
     e->Cantidad = 0;
 }
 
+// RF4: Ordenar productos alfabéticamente por nombre
+void ordenarPorNombre() {
+    Estudiante temp;
+    for (int i = 0; i < cantidad - 1; i++) {
+        for (int j = i + 1; j < cantidad; j++) {
+            if (strcmp(lista[i].Producto, lista[j].Producto) > 0) {
+                temp = lista[i];
+                lista[i] = lista[j];
+                lista[j] = temp;
+            }
+        }
+    }
+}
+
 int main() {
     int opcion;
     char idBuscada[20];
+    char nombreBuscado[50];
 
-    // Carga productos existentes desde el archivo
-    cargarDesdeArchivo();
+    cargarDesdeArchivo(); // RF2
 
     while (1) {
         printf(GREEN "\n=== SISTEMA DE INVENTARIO ===\n" RESET);
-        printf("1. Agregar Productos\n");
-        printf("2. Mostrar todos los Productos\n");
-        printf("3. Buscar por ID\n");
-        printf("4. Eliminar Productos\n");
+        printf("1. Agregar Productos\n");             // RF1
+        printf("2. Mostrar Productos (Ordenados)\n"); // RF4 + RF6
+        printf("3. Buscar por Nombre\n");            // RF5
+        printf("4. Eliminar Producto\n");            // RF3
         printf("5. Salir\n");
         printf("Indique que desea realizar: ");
         scanf("%d", &opcion);
-        getchar(); // Limpia el buffer
+        getchar();
 
         if (opcion == 1) {
-            // Agrega un nuevo producto
             crearEstudiante(&lista[cantidad]);
             cantidad++;
             guardarEnArchivo();
         } else if (opcion == 2) {
-            // Muestra todos los productos registrados
+            ordenarPorNombre(); // RF4
             for (int i = 0; i < cantidad; i++) {
                 if (strlen(lista[i].id) > 0)
-                    mostrarEstudiante(lista[i]);
+                    mostrarEstudiante(lista[i]); // RF6
             }
         } else if (opcion == 3) {
-            // Busca un producto por ID
-            printf("Ingrese el ID a buscar: ");
-            fgets(idBuscada, 20, stdin);
-            idBuscada[strcspn(idBuscada, "\n")] = '\0';
+            printf("Ingrese el nombre del producto a buscar: ");
+            fgets(nombreBuscado, 50, stdin);
+            nombreBuscado[strcspn(nombreBuscado, "\n")] = '\0';
 
-            int pos = buscarPorID(lista, cantidad, idBuscada);
-            if (pos != -1 && strlen(lista[pos].id) > 0)
+            int pos = buscarPorNombre(nombreBuscado);
+            if (pos != -1) {
                 mostrarEstudiante(lista[pos]);
-            else
+            } else {
                 printf("Producto no encontrado.\n");
+            }
         } else if (opcion == 4) {
-            // Elimina un producto por ID
-            printf("Ingrese el ID a eliminar: ");
+            printf("Ingrese el ID del producto a eliminar: ");
             fgets(idBuscada, 20, stdin);
             idBuscada[strcspn(idBuscada, "\n")] = '\0';
 
@@ -157,11 +201,10 @@ int main() {
                 printf("Producto no encontrado.\n");
             }
         } else if (opcion == 5) {
-            // Opción para salir del programa
             printf("Saliendo...\n");
             break;
         } else {
-            printf("Opcion no valida. Intente de nuevo.\n");
+            printf("Opción no válida. Intente nuevamente.\n");
         }
     }
 

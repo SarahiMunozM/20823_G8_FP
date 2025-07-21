@@ -331,6 +331,7 @@ void limpiarPantalla() {
 }
 
 //Menu principal
+//Menu principal
 int main() {
     int opcion;
     char buffer[50];
@@ -338,18 +339,17 @@ int main() {
     cargarDesdeArchivo();
 
     while (1) {
-        printf(GREEN "UNIVERSIDAD DE LAS FUERZAS ARMADAS ´ESPE´\n" RESET);
+        printf(GREEN "UNIVERSIDAD DE LAS FUERZAS ARMADAS *ESPE*\n" RESET);
         printf(CYAN "FUNDAMENTOS_DE_PROGRAMACION" RESET);
         printf(GREEN "\n=== SISTEMA DE INVENTARIO ===\n" RESET);
         printf("1. Agregar Productos\n");
         printf("2. Mostrar Productos (Ordenados)\n");
-        printf("3. Buscar por Nombre\n");
-        printf("4. Buscar por Marca\n");
-        printf("5. Eliminar Producto\n");
-        printf("6. Editar Producto\n");
-        printf("7. Registrar Venta\n");
-        printf("8. Ver Ventas del Dia\n");
-        printf("9. Salir\n");
+        printf("3. Buscar Producto\n");  // Cambié aquí el texto para buscar unificado
+        printf("4. Eliminar Producto\n");
+        printf("5. Editar Producto\n");
+        printf("6. Registrar Venta\n");
+        printf("7. Ver Ventas del Dia\n");
+        printf("8. Salir\n");
 
         printf("Seleccione una opcion: ");
         scanf("%d", &opcion);
@@ -370,33 +370,64 @@ int main() {
                 mostrarTablaProductos();
                 break;
 
-            case 3:
-                printf("Ingrese el nombre del producto: ");
-                fgets(buffer, 50, stdin);
-                buffer[strcspn(buffer, "\n")] = '\0';
+            case 3: {
+                int subopcion;
+                printf(CYAN "Buscar por:\n"RESET);
+                printf("1. Nombre\n");
+                printf("2. Marca\n");
+                printf("3. ID\n");
+                printf("Seleccione una opcion: ");
+                scanf("%d", &subopcion);
+                getchar();
 
-                int posNombre = buscarPorNombre(buffer);
-                if (posNombre != -1) {
-                    mostrarProducto(lista[posNombre]);
-                } else {
-                    printf(RED "Producto no encontrado.\n" RESET);
+                int pos = -1;
+                switch(subopcion) {
+                    case 1:
+                        printf("Ingrese el nombre del producto: ");
+                        fgets(buffer, 50, stdin);
+                        buffer[strcspn(buffer, "\n")] = '\0';
+                        pos = buscarPorNombre(buffer);
+                        if (pos != -1) {
+                            printf(GREEN "El Producto buscado es: "RESET);
+                            mostrarProducto(lista[pos]);
+                        } else {
+                            printf(RED "Producto no encontrado.\n" RESET);
+                        }
+                        break;
+
+                    case 2:
+                        printf("Ingrese la marca a buscar: ");
+                        fgets(buffer, 50, stdin);
+                        buffer[strcspn(buffer, "\n")] = '\0';
+                        pos = buscarPorMarca(buffer);
+                        if (pos != -1) {
+                            printf(GREEN "El Producto buscado es: "RESET);
+                            mostrarProducto(lista[pos]);
+                        } else {
+                            printf(RED "Marca no encontrada.\n" RESET);
+                        }
+                        break;
+
+                    case 3:
+                        printf("Ingrese el ID del producto: ");
+                        fgets(buffer, 20, stdin);
+                        buffer[strcspn(buffer, "\n")] = '\0';
+                        pos = buscarPorID(lista, cantidad, buffer);
+                        if (pos != -1 && strlen(lista[pos].id) > 0) {
+                            printf(GREEN "El Producto buscado es: "RESET);
+                            mostrarProducto(lista[pos]);
+                        } else {
+                            printf(RED "Producto no encontrado.\n" RESET);
+                        }
+                        break;
+
+                    default:
+                        printf(RED "Opcion invalida.\n" RESET);
                 }
                 break;
+            }
 
-            case 4:
-                printf("Ingrese la marca a buscar: ");
-                fgets(buffer, 50, stdin);
-                buffer[strcspn(buffer, "\n")] = '\0';
-
-                int posMarca = buscarPorMarca(buffer);
-                if (posMarca != -1) {
-                    mostrarProducto(lista[posMarca]);
-                } else {
-                    printf(RED "Marca no encontrada.\n" RESET);
-                }
-                break;
-
-            case 5: {
+            case 4: {
                 printf("Ingrese el ID del producto a eliminar: ");
                 fgets(buffer, 20, stdin);
                 buffer[strcspn(buffer, "\n")] = '\0';
@@ -429,22 +460,22 @@ int main() {
                 break;
             }
 
-            case 6:
+            case 5:
                 printf("Ingrese ID del producto a editar: ");
                 fgets(buffer, 20, stdin);
                 buffer[strcspn(buffer, "\n")] = '\0';
                 editarProducto(buffer);
                 break;
 
-            case 7:
+            case 6:
                 registrarVenta();
                 break;
 
-            case 8:
+            case 7:
                 mostrarVentasDelDia();
                 break;
 
-            case 9:
+            case 8:
                 printf("Saliendo...\n");
                 printf(GREEN "Creditos: Adriana Astudillo, Sarahi Munoz, Alan Nero :)" RESET);
                 return 0;

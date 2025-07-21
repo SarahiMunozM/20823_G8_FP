@@ -170,9 +170,9 @@ void ordenarPorNombre() {
 }
 void mostrarTablaProductos() {
     ordenarPorNombre();
-    printf("\n+--------------+-------------------------------------+----------------------+-------------+\n");
-    printf("|     ID       |             PRODUCTO                 |        MARCA         |   STOCK     |\n");
-    printf("+--------------+-------------------------------------+----------------------+-------------+\n");
+    printf("\n+--------------+----------------------------------------+----------------------+-------------+\n");
+    printf("|     ID       |             PRODUCTO                   |        MARCA         |   STOCK     |\n");
+    printf("+--------------+----------------------------------------+----------------------+-------------+\n");
     int alertas = 0;
     int productosMostrados = 0;
     for (int i = 0; i < cantidad; i++) {
@@ -182,7 +182,7 @@ void mostrarTablaProductos() {
                 printf(RED);
                 alertas++;
             }
-            printf("| %-12s | %-35s | %-20s | %-11d |\n",
+            printf("| %-12s | %-38s | %-20s | %-11d |\n",
                    lista[i].id,
                    lista[i].Producto,
                    lista[i].Marca,
@@ -192,13 +192,13 @@ void mostrarTablaProductos() {
             productosMostrados++;
         }
     }
-    printf("+--------------+-------------------------------------+----------------------+-------------+\n");
+    printf("+--------------+----------------------------------------+----------------------+-------------+\n");
     printf("\nTotal de productos registrados: %d\n", cantidad);
     if (alertas > 0) {
         printf(RED "Alertas: %d producto(s) con stock bajo (5 unidades o menos)\n" RESET, alertas);
     }
-    printf("  " RED "*" RESET YELLOW"Stock bajo o Producto agotado"RESET);
-    printf("  * Stock normal\n");
+    printf(" " RED "* Stock bajo o Producto agotado"RESET);
+    printf(" * Stock normal\n");
 }
 //RF9:Editar producto existente
  void editarProducto(char id[]) {

@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <windows.h>
 
-//Colores para la consola
+
 #define GREEN "\x1b[32m"
 #define RED "\x1b[31m"
 #define YELLOW "\x1b[33m"

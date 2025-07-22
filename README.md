@@ -1,5 +1,5 @@
 # 📚 Repositorio de Documentos Académicos 
-# NRC: # 20823_G8_FP
+# NRC: # 20823-GN°8_FP
 
 ### Este repositorio contiene documentos de: Codigos C y PSe Int de Fundamentos de Programación.
 

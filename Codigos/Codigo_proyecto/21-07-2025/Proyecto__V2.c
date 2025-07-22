@@ -18,7 +18,7 @@
 #define ARCHIVO_VENTAS CARPETA_INVENTARIO "registro_ventas.txt"
 #define ARCHIVO_BACKUP CARPERA_INVENTARIO "backup_inventario.txt"
 
-//Estructura para almacenar información de productos
+
 typedef struct {
     char id[20];
     char Producto[50];

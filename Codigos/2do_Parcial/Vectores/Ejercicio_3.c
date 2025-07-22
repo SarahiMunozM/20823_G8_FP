@@ -1,9 +1,12 @@
 #include <stdio.h>
-#include <limits.h> // Para INT_MAX
+#include <limits.h> 
+
+// Para INT_MAX
 //El sistema debe almacenar números enteros del 1 al 15 en un arreglo (Vec).
 //El sistema debe calcular el factorial de cada número en Vec y almacenarlo en otro arreglo (Fact).
 //El sistema debe imprimir una tabla con dos columnas: Número y Factorial, formateada para alinear los valores.
 //El sistema debe usar el tipo unsigned long long para evitar desbordamiento en factoriales grandes.
+
 int main() {
  const int n = 15;
  int Vec[n];

@@ -9,12 +9,14 @@ int main() {
     int temp;
     int vector[10];
 
+    
     /* Leer los valores del vector */
     for (i = 0; i < 10; i++) {
         printf("Ingrese el valor %d: \n", i + 1);
         scanf("%d", &vector[i]);
     }
 
+    
     /* Ordenar el vector */
     for (i = 0; i < 9; i++) {
         for (j = i + 1; j < 10; j++) {

@@ -1,5 +1,5 @@
 Proceso SistemaGestionProductos
-    // --- DECLARACIÓN DE VARIABLES ---
+    // --- DECLARACIÃ“N DE VARIABLES ---
     Definir opcion, cantidadProductos, cantidadVentas, i, j, idBuscar, cantidadVendida Como Entero
     Definir nombreBuscar, marcaBuscar, confirmacion Como Caracter
     Definir encontrado Como Logico
@@ -17,23 +17,23 @@ Proceso SistemaGestionProductos
     Dimension cantidadVenta[100]
     Dimension fechaVenta[100]
 	
-    // Inicialización
-    cantidadProductos <- 1  // ¡Cambiado a 1! (PSeInt usa índices desde 1)
+    // InicializaciÃ³n
+    cantidadProductos <- 1  // Â¡Cambiado a 1! (PSeInt usa Ã­ndices desde 1)
     cantidadVentas <- 1
     
     Repetir
         Escribir "";
-        Escribir "----- MENÚ PRINCIPAL -----";
+        Escribir "----- MENÃš PRINCIPAL -----";
         Escribir "1. Agregar producto";
         Escribir "2. Mostrar productos";
         Escribir "3. Buscar producto";
         Escribir "4. Eliminar producto";
         Escribir "5. Editar producto";
         Escribir "6. Registrar venta";
-        Escribir "7. Ver ventas del día";
-        Escribir "0. Salir";
+        Escribir "7. Ver ventas del dÃ­a";
+        Escribir "8. Salir";
         Escribir "--------------------------";
-        Escribir "Ingrese una opción:";
+        Escribir "Ingrese una opciÃ³n:";
         Leer opcion;
         
         Segun opcion Hacer
@@ -55,9 +55,9 @@ Proceso SistemaGestionProductos
 					Leer stockProducto[cantidadProductos]  // Corregido
 					
 					cantidadProductos <- cantidadProductos + 1
-					Escribir "¡Producto registrado con éxito!"
+					Escribir "Â¡Producto registrado con Ã©xito!"
 				Sino
-					Escribir "No hay espacio para más productos."
+					Escribir "No hay espacio para mÃ¡s productos."
 				FinSi
                 
             2:
@@ -95,7 +95,7 @@ Proceso SistemaGestionProductos
                             FinSi
                         FinPara
                         Si No encontrado Entonces
-                            Escribir "No se encontró producto con ID ", idBuscar
+                            Escribir "No se encontrÃ³ producto con ID ", idBuscar
                         FinSi
 						
                     2:
@@ -109,7 +109,7 @@ Proceso SistemaGestionProductos
                             FinSi
                         FinPara
                         Si No encontrado Entonces
-                            Escribir "No se encontró producto con nombre: ", nombreBuscar
+                            Escribir "No se encontrÃ³ producto con nombre: ", nombreBuscar
                         FinSi
 						
                     3:
@@ -123,11 +123,11 @@ Proceso SistemaGestionProductos
                             FinSi
                         FinPara
                         Si No encontrado Entonces
-                            Escribir "No se encontró producto de marca: ", marcaBuscar
+                            Escribir "No se encontrÃ³ producto de marca: ", marcaBuscar
                         FinSi
 						
                     De Otro Modo:
-                        Escribir "Opción de búsqueda no válida."
+                        Escribir "OpciÃ³n de bÃºsqueda no vÃ¡lida."
                 FinSegun
                 
             4:
@@ -139,12 +139,12 @@ Proceso SistemaGestionProductos
 					i <- 1  // Inicializamos manualmente
 					Mientras i <= cantidadProductos Y No encontrado Hacer  // Usamos MIENTRAS en lugar de PARA
 						Si idProducto[i] = idBuscar Entonces
-							Escribir "¿Está seguro de eliminar este producto? (S/N)"
+							Escribir "Â¿EstÃ¡ seguro de eliminar este producto? (S/N)"
 							Escribir "ID: ", idProducto[i], " | Nombre: ", nombreProducto[i]
 							Leer confirmacion
 							Si confirmacion = "S" O confirmacion = "s" Entonces
 								Si cantidadProductos = 1 Entonces
-									idProducto[i] <- 0       // Asegúrate de usar el tipo correcto (número o cadena)
+									idProducto[i] <- 0       // AsegÃºrate de usar el tipo correcto (nÃºmero o cadena)
 									nombreProducto[i] <- ""
 									marcaProducto[i] <- ""
 									precioProducto[i] <- 0.0
@@ -161,14 +161,14 @@ Proceso SistemaGestionProductos
 								cantidadProductos <- cantidadProductos - 1
 								Escribir "Producto eliminado."
 							Sino
-								Escribir "Operación cancelada."
+								Escribir "OperaciÃ³n cancelada."
 							FinSi
-							encontrado <- Verdadero  // Al encontrarlo, saldrá del bucle
+							encontrado <- Verdadero  // Al encontrarlo, saldrÃ¡ del bucle
 						FinSi
 						i <- i + 1  // Incrementamos manualmente
 					FinMientras
 					Si No encontrado Entonces
-						Escribir "No se encontró producto con ID ", idBuscar
+						Escribir "No se encontrÃ³ producto con ID ", idBuscar
 					FinSi
 				Sino
 					Escribir "No hay productos para eliminar."
@@ -195,7 +195,7 @@ Proceso SistemaGestionProductos
                         FinSi
                     FinPara
                     Si No encontrado Entonces
-                        Escribir "No se encontró producto con ID ", idBuscar
+                        Escribir "No se encontrÃ³ producto con ID ", idBuscar
                     FinSi
                 Sino
                     Escribir "No hay productos para editar."
@@ -227,14 +227,14 @@ Proceso SistemaGestionProductos
                         FinSi
                     FinPara
                     Si No encontrado Entonces
-                        Escribir "No se encontró producto con ID ", idBuscar
+                        Escribir "No se encontrÃ³ producto con ID ", idBuscar
                     FinSi
                 Sino
                     Escribir "No hay productos para realizar ventas."
                 FinSi
 				
             7:
-                // --- VER VENTAS DEL DÍA ---
+                // --- VER VENTAS DEL DÃA ---
                 Si cantidadVentas > 0 Entonces
                     Escribir "----- VENTAS REGISTRADAS -----"
                     Para i <- 1 Hasta cantidadVentas - 1 Hacer
@@ -244,11 +244,11 @@ Proceso SistemaGestionProductos
                     Escribir "No hay ventas registradas."
                 FinSi
 				
-            0:
+            8:
                 Escribir "Saliendo del sistema..."
 				
             De Otro Modo:
-                Escribir "Opción no válida."
+                Escribir "OpciÃ³n no vÃ¡lida."
         FinSegun
 		
     Hasta Que opcion = 0

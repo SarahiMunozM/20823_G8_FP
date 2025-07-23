@@ -39,20 +39,50 @@ Proceso SistemaGestionProductos
         Segun opcion Hacer
             1:
 				Si cantidadProductos <= 100 Entonces
-					Escribir "Ingrese ID del producto:"
-					Leer idProducto[cantidadProductos]
+					// Validación del ID (no vacío y numérico)
+					Repetir
+						Escribir "Ingrese ID del producto (número entero):"
+						Leer idProducto[cantidadProductos]
+						Si idProducto[cantidadProductos] <= 0 Entonces
+							Escribir "Error: El ID debe ser un número positivo."
+						FinSi
+					Hasta Que idProducto[cantidadProductos] > 0  // Repite hasta que sea válido
 					
-					Escribir "Ingrese nombre del producto:"
-					Leer nombreProducto[cantidadProductos]  // Corregido
+					// Validación del nombre (no vacío)
+					Repetir
+						Escribir "Ingrese nombre del producto:"
+						Leer nombreProducto[cantidadProductos]
+						Si nombreProducto[cantidadProductos] = "" Entonces
+							Escribir "Error: El nombre no puede estar vacío."
+						FinSi
+					Hasta Que nombreProducto[cantidadProductos] <> ""
 					
-					Escribir "Ingrese marca del producto:"
-					Leer marcaProducto[cantidadProductos]  // Corregido
+					// Validación de la marca (no vacío)
+					Repetir
+						Escribir "Ingrese marca del producto:"
+						Leer marcaProducto[cantidadProductos]
+						Si marcaProducto[cantidadProductos] = "" Entonces
+							Escribir "Error: La marca no puede estar vacía."
+						FinSi
+					Hasta Que marcaProducto[cantidadProductos] <> ""
 					
-					Escribir "Ingrese precio del producto:"
-					Leer precioProducto[cantidadProductos]  // Corregido
+					// Validación del precio (numérico y positivo)
+					Repetir
+						Escribir "Ingrese precio del producto (ej: 19.99):"
+						Leer precioProducto[cantidadProductos]
+						Si precioProducto[cantidadProductos] <= 0 Entonces
+							Escribir "Error: El precio debe ser mayor a 0."
+						FinSi
+					Hasta Que precioProducto[cantidadProductos] > 0
 					
-					Escribir "Ingrese stock disponible:"
-					Leer stockProducto[cantidadProductos]  // Corregido
+					// Validación del stock (entero positivo)
+					Repetir
+						Escribir "Ingrese stock disponible (entero positivo):"
+						Leer stockProducto[cantidadProductos]
+						Si stockProducto[cantidadProductos] < 0 Entonces
+							Escribir "Error: El stock no puede ser negativo."
+						FinSi
+					Hasta Que stockProducto[cantidadProductos] >= 0
 					
 					cantidadProductos <- cantidadProductos + 1
 					Escribir "¡Producto registrado con éxito!"
@@ -61,7 +91,7 @@ Proceso SistemaGestionProductos
 				FinSi
                 
             2:
-                Si cantidadProductos > 0 Entonces  // Mostrar aunque solo haya 1 producto
+                Si cantidadProductos > 1 Entonces  // Mostrar aunque solo haya 1 producto
 					Escribir "=== LISTA DE PRODUCTOS ==="
 					Para i <- 1 Hasta cantidadProductos Hacer  // Recorre todos los productos
 						Escribir "-----------------------------------"
@@ -140,7 +170,7 @@ Proceso SistemaGestionProductos
 					Mientras i <= cantidadProductos Y No encontrado Hacer  // Usamos MIENTRAS en lugar de PARA
 						Si idProducto[i] = idBuscar Entonces
 							Escribir "¿Está seguro de eliminar este producto? (S/N)"
-							Escribir "ID: ", idProducto[i], " | Nombre: ", nombreProducto[i]
+							Escribir "ID: ", idProducto[i], " | Nombre: ", nombreProducto[i], " | Marca: ", marcaProducto[i], " | Precio: $", precioProducto[i], " | Stock: ", stockProducto[i]
 							Leer confirmacion
 							Si confirmacion = "S" O confirmacion = "s" Entonces
 								Si cantidadProductos = 1 Entonces
@@ -251,5 +281,5 @@ Proceso SistemaGestionProductos
                 Escribir "Opción no válida."
         FinSegun
 		
-    Hasta Que opcion = 0
+    Hasta Que opcion = 8
 FinAlgoritmo

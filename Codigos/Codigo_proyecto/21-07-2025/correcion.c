@@ -471,13 +471,11 @@ int main() {
                     printf(YELLOW "\n=== CONFIRMACION DE ELIMINACION ===\n" RESET);
                     printf(CYAN "Producto a eliminar:\n" RESET);
                     mostrarProducto(lista[posEliminar]);
-
-                    printf(RED "\nADVERTENCIA: Esta accion no se puede deshacer!\n" RESET);
+                    printf(RED "\nADVERTENCIA:*Esta accion no se puede deshacer*\n" RESET);
                     printf(YELLOW "Escriba 'ELIMINAR-%s\n" RESET, buffer);
                     char confirmacion[30];
                     fgets(confirmacion, 30, stdin);
                     confirmacion[strcspn(confirmacion, "\n")] = '\0';
-
                     char confirmacionEsperada[30];
                     sprintf(confirmacionEsperada, "ELIMINAR-%s", buffer);
 

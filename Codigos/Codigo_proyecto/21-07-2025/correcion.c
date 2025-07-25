@@ -478,7 +478,6 @@ int main() {
                     confirmacion[strcspn(confirmacion, "\n")] = '\0';
                     char confirmacionEsperada[30];
                     sprintf(confirmacionEsperada, "ELIMINAR-%s", buffer);
-
                     if (strcmp(confirmacion, confirmacionEsperada) == 0) {
                         eliminarProducto(&lista[posEliminar]);
                         guardarEnArchivo();

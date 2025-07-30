@@ -25,7 +25,6 @@ int main() {
     float precioproducto[100];
     float stockproducto[100];
 
-	/* --- DECLARACIÓN DE VARIABLES --- */
 	cantidadproductos = 1;
 	cantidadventas = 1;
     do {
@@ -48,7 +47,7 @@ int main() {
                         printf("Ingrese ID del producto (entero positivo):\n");
                         scanf("%d", &idproducto[cantidadproductos]);
                         if (idproducto[cantidadproductos] <= 0)
-                            printf("Error: ID inválido.\n");
+                            printf("Error: ID invalido.\n");
                     } while (idproducto[cantidadproductos] <= 0);
 
                     printf("Ingrese nombre del producto:\n");
@@ -61,20 +60,20 @@ int main() {
                         printf("Ingrese precio del producto:\n");
                         scanf("%f", &precioproducto[cantidadproductos]);
                         if (precioproducto[cantidadproductos] <= 0)
-                            printf("Error: Precio inválido.\n");
+                            printf("Error: Precio invalido.\n");
                     } while (precioproducto[cantidadproductos] <= 0);
 
                     do {
                         printf("Ingrese stock disponible:\n");
                         scanf("%f", &stockproducto[cantidadproductos]);
                         if (stockproducto[cantidadproductos] < 0)
-                            printf("Error: Stock inválido.\n");
+                            printf("Error: Stock invalido.\n");
                     } while (stockproducto[cantidadproductos] < 0);
 
                     cantidadproductos++;
-                    printf("¡Producto registrado con éxito!\n");
+                    printf("Producto registrado con exito\n");
                 } else {
-                    printf("No hay espacio para más productos.\n");
+                    printf("No hay espacio para mas productos.\n");
                 }
                 break;
 

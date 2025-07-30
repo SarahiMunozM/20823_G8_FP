@@ -26,23 +26,19 @@ int main() {
     float stockproducto[100];
 
 	/* --- DECLARACIÓN DE VARIABLES --- */
-	/* --- ARREGLOS PARA DATOS DE PRODUCTOS --- */
-	/* --- ARREGLOS PARA VENTAS --- */
-	/* Inicialización */
 	cantidadproductos = 1;
-	/* ¡Cambiado a 1! (PSeInt usa índices desde 1) */
 	cantidadventas = 1;
     do {
-        printf("\n----- MENÚ PRINCIPAL -----\n");
+        printf("\n----- MENU PRINCIPAL -----\n");
         printf("1. Agregar producto\n");
         printf("2. Mostrar productos\n");
         printf("3. Buscar producto\n");
         printf("4. Eliminar producto\n");
         printf("5. Editar producto\n");
         printf("6. Registrar venta\n");
-        printf("7. Ver ventas del día\n");
+        printf("7. Ver Ventas del dia\n");
         printf("8. Salir\n");
-        printf("Ingrese una opción:\n");
+        printf("Ingrese una opcion:\n");
         scanf("%i", &opcion);
 
         switch (opcion) {
@@ -151,7 +147,7 @@ int main() {
                         break;
 
                     default:
-                        printf("Opción de búsqueda no válida.\n");
+                        printf("Opcion de búsqueda no válida.\n");
                 }
 
                 if (!encontrado) {
@@ -166,7 +162,7 @@ int main() {
 
                     for (i = 0; i < cantidadproductos; i++) {
                         if (idproducto[i] == idbuscar) {
-                            printf("¿Está seguro de eliminar este producto? (S/N)\n");
+                            printf("Esta seguro de eliminar este producto? (S/N)\n");
                             printf("ID: %d | Nombre: %s | Marca: %s | Precio: $%.2f | Stock: %.2f\n",
                                    idproducto[i], nombreproducto[i], marcaproducto[i],
                                    precioproducto[i], stockproducto[i]);
@@ -191,7 +187,7 @@ int main() {
                     }
 
                     if (!encontrado) {
-                        printf("No se encontró producto con ID %d\n", idbuscar);
+                        printf("No se encontro producto con ID %d\n", idbuscar);
                     }
                 } else {
                     printf("No hay productos para eliminar.\n");
@@ -226,7 +222,7 @@ int main() {
                     }
 
                     if (!encontrado) {
-                        printf("No se encontró producto con ID %d\n", idbuscar);
+                        printf("No se encontro producto con ID %d\n", idbuscar);
                     }
                 } else {
                     printf("No hay productos para editar.\n");
@@ -261,7 +257,7 @@ int main() {
                     }
 
                     if (!encontrado) {
-                        printf("No se encontró producto con ID %d\n", idbuscar);
+                        printf("No se encontro producto con ID %d\n", idbuscar);
                     }
                 } else {
                     printf("No hay productos para realizar ventas.\n");
@@ -283,11 +279,10 @@ int main() {
                 break;
 
             default:
-                printf("Opción no válida.\n");
+                printf("Opcion no válida.\n");
         }
     } while (opcion != 8);
 
     return 0;
 }
 }
-

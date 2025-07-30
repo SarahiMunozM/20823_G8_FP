@@ -69,7 +69,7 @@ void guardarEnArchivo() {
 }
 
 void cargarDesdeArchivo() {
-    crearCarpetaInventario(); // Asegurar que existe la carpeta
+    crearCarpetaInventario(); // Se asegurar que existe la carpeta
     FILE *archivo = fopen(ARCHIVO, "r");
     if (archivo == NULL) {
         printf(YELLOW "Creando nuevo archivo de inventario...\n" RESET);
@@ -141,7 +141,7 @@ void crearProducto(Producto *p) {
         p->id[strcspn(p->id, "\n")] = '\0';
 
         if (strlen(p->id) == 0) {
-            printf(RED "Error: El ID no puede estar vacío.\n" RESET);
+            printf(RED "Error: El ID no puede estar vacio.\n" RESET);
         } else if (!idUnico(p->id)) {
             printf(RED "Error: ID ya existe. Intente nuevamente.\n" RESET);
         } else {
@@ -156,7 +156,7 @@ void crearProducto(Producto *p) {
         p->Producto[strcspn(p->Producto, "\n")] = '\0';
 
         if (strlen(p->Producto) == 0) {
-            printf(RED "Error: El nombre del producto no puede estar vacío.\n" RESET);
+            printf(RED "Error: El nombre del producto no puede estar vacio.\n" RESET);
         } else {
             break;
         }
@@ -169,7 +169,7 @@ void crearProducto(Producto *p) {
         p->Marca[strcspn(p->Marca, "\n")] = '\0';
 
         if (strlen(p->Marca) == 0) {
-            printf(RED "Error: La marca no puede estar vacía.\n" RESET);
+            printf(RED "Error: La marca no puede estar vacia.\n" RESET);
         } else {
             break;
         }
@@ -180,7 +180,7 @@ void crearProducto(Producto *p) {
         printf("Ingrese Cantidad: ");
         int cantidadIngresada;
         if (scanf("%d", &cantidadIngresada) != 1) {
-            printf(RED "Error: Ingrese un número válido.\n" RESET);
+            printf(RED "Error: Ingrese un numero valido.\n" RESET);
             while (getchar() != '\n'); // Limpiar buffer
             continue;
         }
@@ -306,7 +306,7 @@ void editarProducto(char id[]) {
         fgets(input, 10, stdin);
         int nuevaCantidad;
         if (sscanf(input, "%d", &nuevaCantidad) != 1) {
-            printf(RED "Error: Ingrese un número válido.\n" RESET);
+            printf(RED "Error: Ingrese un numero valido.\n" RESET);
             continue;
         }
 
@@ -343,14 +343,14 @@ void registrarVenta() {
     while (1) {
         printf("Ingrese cantidad a vender: ");
         if (scanf("%d", &cantidadVendida) != 1) {
-            printf(RED "Error: Ingrese un número válido.\n" RESET);
+            printf(RED "Error: Ingrese un numero valido.\n" RESET);
             while (getchar() != '\n');
             continue;
         }
         getchar();
 
         if (cantidadVendida <= 0) {
-            printf(RED "\nError: Cantidad no válida.\n" RESET);
+            printf(RED "\nError: Cantidad no valida.\n" RESET);
         } else if (cantidadVendida > lista[pos].Cantidad) {
             printf(RED "\nError: Stock insuficiente.\n" RESET);
             printf("Intento vender: %d | Stock disponible: %d\n",
@@ -454,7 +454,7 @@ int main() {
         fgets(input, sizeof(input), stdin);
 
         if (sscanf(input, "%d", &opcion) != 1) {
-            printf(RED "\nError: Opción no válida.\n" RESET);
+            printf(RED "\nError: Opcion no valida.\n" RESET);
             printf("\nPresione Enter para continuar...");
             getchar();
             continue;
@@ -487,7 +487,7 @@ int main() {
 
                 fgets(input, sizeof(input), stdin);
                 if (sscanf(input, "%d", &subopcion) != 1) {
-                    printf(RED "Opción no válida.\n" RESET);
+                    printf(RED "Opción no valida.\n" RESET);
                     break;
                 }
 
@@ -524,7 +524,7 @@ int main() {
                     printf(GREEN "El Producto buscado es: " RESET);
                     mostrarProducto(lista[pos]);
                 } else {
-                    printf(RED "No se encontró el producto.\n" RESET);
+                    printf(RED "No se encontro el producto.\n" RESET);
                 }
                 break;
             }

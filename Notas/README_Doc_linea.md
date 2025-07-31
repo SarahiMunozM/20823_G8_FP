@@ -1,4 +1,4 @@
-Documento Word caja blanca: https://docs.google.com/document/d/1eFH2Klw-X9hhL5VHgpaQBthPGpnusfwN3mL37QJ25po/edit?tab=t.0
+Documento Word caja blanca: https://docs.google.com/document/d/1m3XOWp-DldXUFa9NYjvWjoD_-OrnckbFVVvQaI4ZlbA/edit?usp=sharing
 
 Documento word: https://docs.google.com/document/d/14nOQF1Xyk4rQNQLnz6RbWfuYwP9-cRTNJN5Doj7ySLU/edit?usp=sharing
 

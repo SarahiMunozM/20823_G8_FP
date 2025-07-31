@@ -5,7 +5,6 @@
 #include <windows.h>
 #include <stdbool.h>
 
-// Colores para la consola
 #define GREEN "\x1b[32m"
 #define RED "\x1b[31m"
 #define YELLOW "\x1b[33m"
@@ -25,6 +24,7 @@ typedef struct {
     char Producto[50];
     char Marca[50];
     int Cantidad;
+    float Precio;
 } Producto;
 
 // Estructura para el registro de ventas
@@ -32,6 +32,8 @@ typedef struct {
     char id[20];
     char Producto[50];
     int CantidadVendida;
+    float PrecioUnitario;
+    float Total;
     char fecha[30];
 } Venta;
 
@@ -56,11 +58,12 @@ void guardarEnArchivo() {
     int i = 0;
     while (i < cantidad) {
         if (strlen(lista[i].id) > 0) {
-            fprintf(archivo, "%s|%s|%s|%d\n",
+            fprintf(archivo, "%s|%s|%s|%d|%.2f\n",
                     lista[i].id,
                     lista[i].Producto,
                     lista[i].Marca,
-                    lista[i].Cantidad);
+                    lista[i].Cantidad,
+                    lista[i].Precio);
         }
         i++;
     }
@@ -69,18 +72,19 @@ void guardarEnArchivo() {
 }
 
 void cargarDesdeArchivo() {
-    crearCarpetaInventario(); // Se asegurar que existe la carpeta
+    crearCarpetaInventario();
     FILE *archivo = fopen(ARCHIVO, "r");
     if (archivo == NULL) {
         printf(YELLOW "Creando nuevo archivo de inventario...\n" RESET);
         return;
     }
     while (!feof(archivo) && cantidad < MAX_PRODUCTOS) {
-        if (fscanf(archivo, "%[^|]|%[^|]|%[^|]|%d\n",
+        if (fscanf(archivo, "%[^|]|%[^|]|%[^|]|%d|%f\n",
                   lista[cantidad].id,
                   lista[cantidad].Producto,
                   lista[cantidad].Marca,
-                  &lista[cantidad].Cantidad) == 4) {
+                  &lista[cantidad].Cantidad,
+                  &lista[cantidad].Precio) == 5) {
             cantidad++;
         }
     }
@@ -193,6 +197,24 @@ void crearProducto(Producto *p) {
             printf(RED "Error: La cantidad no puede ser negativa, ni 0.\nIntente nuevamente.\n" RESET);
         }
     }
+    // Validación de Precio
+    while (1) {
+        printf("Ingrese Precio (USD): ");
+        float precioIngresado;
+        if (scanf("%f", &precioIngresado) != 1) {
+            printf(RED "Error: Ingrese un numero valido.\n" RESET);
+            while (getchar() != '\n');
+            continue;
+        }
+        getchar();
+
+        if (precioIngresado > 0) {
+            p->Precio = precioIngresado;
+            break;
+        } else {
+            printf(RED "Error: El precio debe ser mayor que 0.\n" RESET);
+        }
+    }
 
     printf(GREEN "Producto agregado exitosamente.\n" RESET);
 }
@@ -203,6 +225,7 @@ void mostrarProducto(Producto p) {
     printf("Producto: %s\n", p.Producto);
     printf("Marca: %s\n", p.Marca);
     printf("Cantidad: %d\n", p.Cantidad);
+    printf("Precio: %f\n", p.Precio);
 
     if (p.Cantidad <= 5) {
         printf(RED "ALERTA: Stock bajo!\n" RESET);
@@ -211,9 +234,10 @@ void mostrarProducto(Producto p) {
 
 // RF3: Eliminar producto
 void eliminarProducto(Producto *p) {
-    strcpy(p->id, "");
-    strcpy(p->Producto, "");
-    strcpy(p->Marca, "");
+    p->id[0] = '\0';
+    p->Producto[0] = '\0';
+    p->Marca[0] = '\0';
+    p->Precio = 0.0;
     p->Cantidad = 0;
 }
 
@@ -230,9 +254,9 @@ void ordenarPorNombre() {
 
 void mostrarTablaProductos() {
     ordenarPorNombre();
-    printf("\n+--------------+----------------------------------------+----------------------+-------------+\n");
-    printf("|     ID       |             PRODUCTO                   |        MARCA         |   STOCK     |\n");
-    printf("+--------------+----------------------------------------+----------------------+-------------+\n");
+    printf("\n+--------------+----------------------------------------+----------------------+-------------+-------------+\n");
+    printf("|     ID       |             PRODUCTO                   |        MARCA         |   STOCK     |   Precio    |\n");
+    printf("+--------------+----------------------------------------+----------------------+-------------+-------------+\n");
 
     int i = 0, alertas = 0, productosMostrados = 0;
     while (i < cantidad) {
@@ -241,18 +265,19 @@ void mostrarTablaProductos() {
                 printf(RED);
                 alertas++;
             }
-            printf("| %-12s | %-38s | %-20s | %-11d |\n",
+            printf("| %-12s | %-38s | %-20s | %-11d | %-11.2f |\n",
                    lista[i].id,
                    lista[i].Producto,
                    lista[i].Marca,
-                   lista[i].Cantidad);
+                   lista[i].Cantidad,
+                   lista[i].Precio);
             printf(RESET);
             productosMostrados++;
         }
         i++;
     }
 
-    printf("+--------------+----------------------------------------+----------------------+-------------+\n");
+    printf("+--------------+----------------------------------------+----------------------+-------------+-------------+\n");
     printf("\nTotal de productos registrados: %d\n", cantidad);
     if (alertas > 0) {
         printf(RED "Alertas: %d producto(s) con stock bajo (5 unidades o menos)\n" RESET, alertas);
@@ -320,6 +345,27 @@ void editarProducto(char id[]) {
         }
     }
 
+    // Editar Precio
+    while (1) {
+        printf("Precio actual: %.2f\nNuevo precio (ingrese -1 para mantener): ", lista[pos].Precio);
+        char input[20];
+        fgets(input, 20, stdin);
+        float nuevoPrecio;
+        if (sscanf(input, "%f", &nuevoPrecio) != 1) {
+            printf(RED "Error: Ingrese un numero valido.\n" RESET);
+            continue;
+        }
+
+        if (nuevoPrecio == -1) {
+            break;
+        } else if (nuevoPrecio >= 0) {
+            lista[pos].Precio = nuevoPrecio;
+            break;
+        } else {
+            printf(RED "Error: El precio no puede ser negativo.\n" RESET);
+        }
+    }
+
     guardarEnArchivo();
     printf(GREEN "¡Producto actualizado!\n" RESET);
 }
@@ -359,25 +405,33 @@ void registrarVenta() {
             break;
         }
     }
+    float precioUnitario = lista[pos].Precio;
+    float totalVenta = precioUnitario * cantidadVendida;
 
     lista[pos].Cantidad -= cantidadVendida;
 
     // Registrar en archivo de ventas
-    time_t t = time(NULL);
+        time_t t = time(NULL);
     struct tm *tm_info = localtime(&t);
     char fecha[30];
     strftime(fecha, sizeof(fecha), "%Y-%m-%d %H:%M:%S", tm_info);
 
     FILE *ventas = fopen(ARCHIVO_VENTAS, "a");
     if (ventas != NULL) {
-        fprintf(ventas, "%s|%s|%d|%s\n",
+        fprintf(ventas, "%s|%s|%d|%.2f|%.2f|%s\n",
                 lista[pos].id,
                 lista[pos].Producto,
                 cantidadVendida,
+                precioUnitario,
+                totalVenta,
                 fecha);
         fclose(ventas);
 
         printf(GREEN "\nVenta registrada exitosamente!\n" RESET);
+        printf("\n--- TICKET DE VENTA ---\n");
+        printf("Producto: %s\nCantidad: %d\nPrecio: $%.2f\nTotal: $%.2f\nFecha: %s\n",
+               lista[pos].Producto, cantidadVendida, precioUnitario, totalVenta, fecha);
+        printf("-----------------------\n");
         printf("Nuevo stock: %d\n", lista[pos].Cantidad);
     } else {
         printf(RED "\nError al guardar la venta.\n" RESET);
@@ -401,23 +455,26 @@ void mostrarVentasDelDia() {
     printf(GREEN "\nVentas realizadas hoy (%s):\n" RESET, fechaActual);
     printf("-----------------------------------\n");
 
-    char linea[200];
+    char linea[256];
     int totalVendidos = 0;
+    float totalVentas = 0.0;
 
-    while (fgets(linea, sizeof(linea), ventas)) {
+    while (fgets(linea, sizeof(linea), ventas) != NULL) {
         Venta v;
-        if (sscanf(linea, "%[^|]|%[^|]|%d|%[^\n]", v.id, v.Producto, &v.CantidadVendida, v.fecha) == 4) {
+        if (sscanf(linea, "%[^|]|%[^|]|%d|%f|%f|%[^\n]",
+                   v.id, v.Producto, &v.CantidadVendida, &v.PrecioUnitario, &v.Total, v.fecha) == 6) {
             if (strncmp(v.fecha, fechaActual, 10) == 0) {
-                printf("Producto: %s | Cantidad: %d | Fecha: %s\n",
-                       v.Producto, v.CantidadVendida, v.fecha);
+                printf("Producto: %s | Cantidad: %d | Total: $%.2f | Fecha: %s\n",
+                       v.Producto, v.CantidadVendida, v.Total, v.fecha);
                 totalVendidos += v.CantidadVendida;
+                totalVentas += v.Total;
             }
         }
     }
-
+    fclose(ventas);
     printf("-----------------------------------\n");
     printf("Total productos vendidos hoy: %d\n", totalVendidos);
-    fclose(ventas);
+    printf(GREEN "Total ganancias hoy: $%.2f\n" RESET, totalVentas);
 }
 
 // Limpieza de la consola de comandos

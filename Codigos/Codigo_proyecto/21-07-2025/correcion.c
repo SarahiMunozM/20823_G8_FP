@@ -127,40 +127,38 @@ int buscarPorMarca(char marca[]) {
 
 // RF1: Crear producto con confirmación y Valida si el ID único
 int idUnico(char id[]) {
-    int i = 0;
-    while (i < cantidad) {
-        if (strcmp(lista[i].id, id) == 0 && strlen(lista[i].id) > 0) {
+    for(int i = 0; i < cantidad; i++) {
+        if(strcmp(lista[i].id, id) == 0 && strlen(lista[i].id) > 0) {
             return 0;
         }
-        i++;
     }
     return 1;
 }
 
 void crearProducto(Producto *p) {
     // Validación del ID (no vacío y único)
-    while (1) {
-        printf("Ingrese ID: ");
-        fgets(p->id, 20, stdin);
-        p->id[strcspn(p->id, "\n")] = '\0';
+    printf("Ingrese ID: ");
+    fgets(p->id, 20, stdin);
+    p->id[strcspn(p->id, "\n")] = '\0';
 
-        if (strlen(p->id) == 0) {
-            printf(RED "Error: El ID no puede estar vacio.\n" RESET);
-        } else if (!idUnico(p->id)) {
-            printf(RED "Error: ID ya existe. Intente nuevamente.\n" RESET);
-        } else {
-            break;
-        }
+    if(strlen(p->id) == 0) {
+        printf(RED "Error: El ID no puede estar vacío. Operación cancelada.\n" RESET);
+        return;
+    }
+
+    if(!idUnico(p->id)) {
+        printf(RED "Error: ID ya existe. Operación cancelada.\n" RESET);
+        return;
     }
 
     // Validación del nombre del producto (no vacío)
-    while (1) {
+       while(1) {
         printf("Ingrese Producto: ");
         fgets(p->Producto, 50, stdin);
         p->Producto[strcspn(p->Producto, "\n")] = '\0';
 
-        if (strlen(p->Producto) == 0) {
-            printf(RED "Error: El nombre del producto no puede estar vacio.\n" RESET);
+        if(strlen(p->Producto) == 0) {
+            printf(RED "Error: El nombre no puede estar vacío.\n" RESET);
         } else {
             break;
         }
@@ -345,7 +343,7 @@ void editarProducto(char id[]) {
         }
     }
 
-    // Editar Precio
+    // Editar Precio - CORRECCIÓN IMPORTANTE
     while (1) {
         printf("Precio actual: %.2f\nNuevo precio (ingrese -1 para mantener): ", lista[pos].Precio);
         char input[20];

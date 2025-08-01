@@ -13,6 +13,9 @@
 
 #define MAX_NOMBRE 50
 #define MAX_PRODUCTOS 1000
+#define BUSCAR_POR_ID 1
+#define BUSCAR_POR_NOMBRE 2
+#define BUSCAR_POR_MARCA 3
 #define CARPETA_INVENTARIO "inventario/"
 #define ARCHIVO CARPETA_INVENTARIO "datos_inventario.txt"
 #define ARCHIVO_VENTAS CARPETA_INVENTARIO "registro_ventas.txt"
@@ -39,6 +42,11 @@ typedef struct {
 
 Producto lista[MAX_PRODUCTOS];
 int cantidad = 0;
+
+void mostrarProducto(Producto p);
+void mostrarResultadosBusqueda(int tipo, const char *termino);
+int buscarProducto(int tipoBusqueda, const char *valor);
+int buscarPorID(Producto lista[], int cantidad, const char *id);
 
 // RF2: Guardar productos en archivo y Cargar productos desde archivo
 void crearCarpetaInventario() {
@@ -74,58 +82,84 @@ void guardarEnArchivo() {
 void cargarDesdeArchivo() {
     crearCarpetaInventario();
     FILE *archivo = fopen(ARCHIVO, "r");
-    if (archivo == NULL) {
-        printf(YELLOW "Creando nuevo archivo de inventario...\n" RESET);
+    if (!archivo) {
+        printf(YELLOW "Archivo de inventario no encontrado. Se creará uno nuevo.\n" RESET);
         return;
     }
-    while (!feof(archivo) && cantidad < MAX_PRODUCTOS) {
-        if (fscanf(archivo, "%[^|]|%[^|]|%[^|]|%d|%f\n",
-                  lista[cantidad].id,
-                  lista[cantidad].Producto,
-                  lista[cantidad].Marca,
-                  &lista[cantidad].Cantidad,
-                  &lista[cantidad].Precio) == 5) {
-            cantidad++;
+
+    cantidad = 0;
+    char linea[256];
+
+    while (fgets(linea, sizeof(linea), archivo)) {
+        linea[strcspn(linea, "\n")] = '\0';
+        if (strlen(linea) == 0) continue;
+
+        Producto p;
+        // Validar que la línea tenga exactamente 5 campos
+        if (sscanf(linea, "%19[^|]|%49[^|]|%49[^|]|%d|%f",
+                  p.id, p.Producto, p.Marca, &p.Cantidad, &p.Precio) == 5) {
+
+            // Validar que ningún campo crítico esté vacío o sea inválido
+            if (strlen(p.id) > 0 && strlen(p.Producto) > 0 && p.Cantidad >= 0 && p.Precio > 0) {
+                lista[cantidad] = p;
+                cantidad++;
+            } else {
+                printf(RED "Línea inválida ignorada: %s\n" RESET, linea);
+            }
+        } else {
+            printf(RED "Formato incorrecto en línea: %s\n" RESET, linea);
         }
     }
     fclose(archivo);
 }
 
-// RF5: Búsqueda por ID, nombre, marca
-int buscarPorID(Producto lista[], int n, char id[]) {
-    int i = 0;
-    while (i < n) {
-        if (strcmp(lista[i].id, id) == 0) {
-            return i;
+// RF6: Búsqueda por ID, nombre, marca
+int buscarProducto(int tipoBusqueda, const char *valor) {
+    for(int i = 0; i < cantidad; i++) {
+        if(strlen(lista[i].id) == 0) continue;
+
+        switch(tipoBusqueda) {
+            case BUSCAR_POR_ID:
+                if(strcmp(lista[i].id, valor) == 0) return i;
+                break;
+            case BUSCAR_POR_NOMBRE:
+                if(strcmp(lista[i].Producto, valor) == 0) return i;
+                break;
+            case BUSCAR_POR_MARCA:
+                if(strcmp(lista[i].Marca, valor) == 0) return i;
+                break;
         }
-        i++;
     }
     return -1;
 }
+void mostrarResultadosBusqueda(int tipo, const char *termino) {
+    printf("\n=== RESULTADOS DE BÚSQUEDA ===\n");
 
-int buscarPorNombre(char nombre[]) {
-    int i = 0;
-    while (i < cantidad) {
-        if (strcmp(lista[i].Producto, nombre) == 0 && strlen(lista[i].id) > 0) {
-            return i;
+    int encontrados = 0;
+    for(int i = 0; i < cantidad; i++) {
+        if(strlen(lista[i].id) == 0) continue;
+
+        bool coincide = false;
+        switch(tipo) {
+            case BUSCAR_POR_ID: coincide = (strcmp(lista[i].id, termino) == 0); break;
+            case BUSCAR_POR_NOMBRE: coincide = (strstr(lista[i].Producto, termino) != NULL); break;
+            case BUSCAR_POR_MARCA: coincide = (strstr(lista[i].Marca, termino) != NULL); break;
         }
-        i++;
+
+        if(coincide) {
+            mostrarProducto(lista[i]);
+            encontrados++;
+        }
     }
-    return -1;
+
+    if(encontrados == 0) {
+        printf(RED "No se encontraron productos.\n" RESET);
+    } else {
+        printf(GREEN "\nTotal encontrados: %d\n" RESET, encontrados);
+    }
 }
 
-int buscarPorMarca(char marca[]) {
-    int i = 0;
-    while (i < cantidad) {
-        if (strcmp(lista[i].Marca, marca) == 0 && strlen(lista[i].id) > 0) {
-            return i;
-        }
-        i++;
-    }
-    return -1;
-}
-
-// RF1: Crear producto con confirmación y Valida si el ID único
+// RF2: Crear producto con confirmación y Valida si el ID único
 int idUnico(char id[]) {
     for(int i = 0; i < cantidad; i++) {
         if(strcmp(lista[i].id, id) == 0 && strlen(lista[i].id) > 0) {
@@ -177,43 +211,28 @@ void crearProducto(Producto *p) {
         }
     }
 
-    // Validación de Cantidad (no negativa)
+    // Validar cantidad
     while (1) {
-        printf("Ingrese Cantidad: ");
-        int cantidadIngresada;
-        if (scanf("%d", &cantidadIngresada) != 1) {
-            printf(RED "Error: Ingrese un numero valido.\n" RESET);
-            while (getchar() != '\n'); // Limpiar buffer
-            continue;
-        }
-        getchar(); // Limpiar buffer
-
-        if (cantidadIngresada > 0) {
-            p->Cantidad = cantidadIngresada;
+        printf("Ingrese cantidad: ");
+        if (scanf("%d", &p->Cantidad) == 1 && p->Cantidad > 0) {
             break;
         } else {
-            printf(RED "Error: La cantidad no puede ser negativa, ni 0.\nIntente nuevamente.\n" RESET);
-        }
-    }
-    // Validación de Precio
-    while (1) {
-        printf("Ingrese Precio (USD): ");
-        float precioIngresado;
-        if (scanf("%f", &precioIngresado) != 1) {
-            printf(RED "Error: Ingrese un numero valido.\n" RESET);
+            printf(RED "Error: Ingrese un número válido.\n" RESET);
             while (getchar() != '\n');
-            continue;
-        }
-        getchar();
-
-        if (precioIngresado > 0) {
-            p->Precio = precioIngresado;
-            break;
-        } else {
-            printf(RED "Error: El precio debe ser mayor que 0.\n" RESET);
         }
     }
 
+    // Validar precio
+    while (1) {
+        printf("Ingrese precio: ");
+        if (scanf("%f", &p->Precio) == 1 && p->Precio > 0) {
+            break;
+        } else {
+            printf(RED "Error: Ingrese un precio válido.\n" RESET);
+            while (getchar() != '\n');
+        }
+    }
+    getchar();
     printf(GREEN "Producto agregado exitosamente.\n" RESET);
 }
 
@@ -223,20 +242,24 @@ void mostrarProducto(Producto p) {
     printf("Producto: %s\n", p.Producto);
     printf("Marca: %s\n", p.Marca);
     printf("Cantidad: %d\n", p.Cantidad);
-    printf("Precio: %f\n", p.Precio);
+    printf("Precio: %.2f\n", p.Precio);
 
-    if (p.Cantidad <= 5) {
+    if(p.Cantidad <= 5) {
         printf(RED "ALERTA: Stock bajo!\n" RESET);
     }
 }
 
 // RF3: Eliminar producto
-void eliminarProducto(Producto *p) {
-    p->id[0] = '\0';
-    p->Producto[0] = '\0';
-    p->Marca[0] = '\0';
-    p->Precio = 0.0;
-    p->Cantidad = 0;
+void eliminarProducto(int pos) {
+    if (pos < 0 || pos >= cantidad) {
+        printf(RED "Posición inválida.\n" RESET);
+        return;
+    }
+
+    // Marcar como eliminado (borrado lógico)
+    lista[pos].id[0] = '\0';
+    guardarEnArchivo();
+    printf(GREEN "Producto eliminado.\n" RESET);
 }
 
 int compararProductos(const void *a, const void *b) {
@@ -284,9 +307,9 @@ void mostrarTablaProductos() {
     printf(" * Stock normal\n");
 }
 
-// RF9: Editar producto existente
+// RF4: Editar producto existente
 void editarProducto(char id[]) {
-    int pos = buscarPorID(lista, cantidad, id);
+    int pos = buscarProducto(BUSCAR_POR_ID, id);
     if (pos == -1) {
         printf(RED "Error: Producto no encontrado.\n" RESET);
         return;
@@ -343,7 +366,7 @@ void editarProducto(char id[]) {
         }
     }
 
-    // Editar Precio - CORRECCIÓN IMPORTANTE
+    // Editar Precio
     while (1) {
         printf("Precio actual: %.2f\nNuevo precio (ingrese -1 para mantener): ", lista[pos].Precio);
         char input[20];
@@ -368,14 +391,14 @@ void editarProducto(char id[]) {
     printf(GREEN "¡Producto actualizado!\n" RESET);
 }
 
-// RF7: Registrar ventas con validación de stock
+// RF9: Registrar ventas con validación de stock
 void registrarVenta() {
     char id[20];
     printf("Ingrese ID del producto a vender: ");
     fgets(id, 20, stdin);
     id[strcspn(id, "\n")] = '\0';
 
-    int pos = buscarPorID(lista, cantidad, id);
+    int pos = buscarProducto(BUSCAR_POR_ID, id);
     if (pos == -1 || strlen(lista[pos].id) == 0) {
         printf(RED "\nError: Producto no encontrado.\n" RESET);
         return;
@@ -486,6 +509,8 @@ void limpiarPantalla() {
 
 // Menú principal
 int main() {
+    memset(lista, 0, sizeof(lista));
+    cantidad = 0;
     cargarDesdeArchivo();
     bool salir = false;
 
@@ -533,70 +558,44 @@ int main() {
             }
 
             case 3: {
-                int subopcion;
-                printf(CYAN "Buscar por:\n" RESET);
-                printf("1. Nombre\n");
-                printf("2. Marca\n");
-                printf("3. ID\n");
-                printf("Seleccione una opcion: ");
+                printf("\n=== TIPO DE BÚSQUEDA ===");
+                printf("\n1. Por ID");
+                printf("\n2. Por Nombre");
+                printf("\n3. Por Marca");
+                printf("\nSeleccione: ");
 
-                fgets(input, sizeof(input), stdin);
-                if (sscanf(input, "%d", &subopcion) != 1) {
-                    printf(RED "Opción no valida.\n" RESET);
-                    break;
-                }
+                int tipoBusqueda;
+                scanf("%d", &tipoBusqueda);
+                while(getchar() != '\n');
 
-                char buffer[50];
-                int pos = -1;
+                char valor[50];
+                printf("Ingrese término de búsqueda: ");
+                fgets(valor, 50, stdin);
+                valor[strcspn(valor, "\n")] = '\0';
 
-                switch(subopcion) {
-                    case 1:
-                        printf("Ingrese el nombre del producto: ");
-                        fgets(buffer, 50, stdin);
-                        buffer[strcspn(buffer, "\n")] = '\0';
-                        pos = buscarPorNombre(buffer);
-                        break;
-
-                    case 2:
-                        printf("Ingrese la marca a buscar: ");
-                        fgets(buffer, 50, stdin);
-                        buffer[strcspn(buffer, "\n")] = '\0';
-                        pos = buscarPorMarca(buffer);
-                        break;
-
-                    case 3:
-                        printf("Ingrese el ID del producto: ");
-                        fgets(buffer, 20, stdin);
-                        buffer[strcspn(buffer, "\n")] = '\0';
-                        pos = buscarPorID(lista, cantidad, buffer);
-                        break;
-
-                    default:
-                        printf(RED "Opcion invalida.\n" RESET);
-                }
-
-                if (pos != -1) {
-                    printf(GREEN "El Producto buscado es: " RESET);
-                    mostrarProducto(lista[pos]);
-                } else {
-                    printf(RED "No se encontro el producto.\n" RESET);
-                }
+                mostrarResultadosBusqueda(tipoBusqueda, valor);
                 break;
             }
-
             case 4: {
                 printf("Ingrese el ID del producto a eliminar: ");
                 char buffer[20];
                 fgets(buffer, 20, stdin);
                 buffer[strcspn(buffer, "\n")] = '\0';
 
-                int posEliminar = buscarPorID(lista, cantidad, buffer);
-                if (posEliminar != -1 && strlen(lista[posEliminar].id) > 0) {
+                int posEliminar = buscarProducto(BUSCAR_POR_ID, buffer);
+
+                if (posEliminar == -1) {
+                    printf(RED "Error: Producto no encontrado.\n" RESET);
+                } else {
+                    // Mostrar información del producto antes de eliminar
                     printf(YELLOW "\n=== CONFIRMACION DE ELIMINACION ===\n" RESET);
-                    printf(CYAN "Producto a eliminar:\n" RESET);
+                    printf(CYAN "\nProducto a eliminar:\n" RESET);
                     mostrarProducto(lista[posEliminar]);
-                    printf(RED "\nADVERTENCIA:*Esta accion no se puede deshacer*\n" RESET);
-                    printf(YELLOW "Escriba 'ELIMINAR-%s'\n" RESET, buffer);
+
+                    // Sistema de confirmación
+                    printf(RED "\nADVERTENCIA: Esta accion no se puede deshacer\n" RESET);
+                    printf(YELLOW "Si esta seguro de eliminar escriba 'ELIMINAR-%s'\n" RESET, buffer);
+                    printf("Confirmación: ");
 
                     char confirmacion[30];
                     fgets(confirmacion, 30, stdin);
@@ -606,18 +605,15 @@ int main() {
                     sprintf(confirmacionEsperada, "ELIMINAR-%s", buffer);
 
                     if (strcmp(confirmacion, confirmacionEsperada) == 0) {
-                        eliminarProducto(&lista[posEliminar]);
+                        eliminarProducto(posEliminar);
                         guardarEnArchivo();
                         printf(GREEN "\nProducto eliminado.\n" RESET);
                     } else {
-                        printf(YELLOW "\nConfirmacion fallida. No se elimino.\n" RESET);
+                        printf(YELLOW "\nConfirmación fallida. No se eliminó.\n" RESET);
                     }
-                } else {
-                    printf(RED "Producto no encontrado.\n" RESET);
                 }
                 break;
             }
-
             case 5: {
                 printf("Ingrese ID del producto a editar: ");
                 char buffer[20];

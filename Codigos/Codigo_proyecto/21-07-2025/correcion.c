@@ -93,9 +93,7 @@ void cargarDesdeArchivo() {
     while (fgets(linea, sizeof(linea), archivo)) {
         linea[strcspn(linea, "\n")] = '\0';
         if (strlen(linea) == 0) continue;
-
         Producto p;
-        // Validar que la línea tenga exactamente 5 campos
         if (sscanf(linea, "%19[^|]|%49[^|]|%49[^|]|%d|%f",
                   p.id, p.Producto, p.Marca, &p.Cantidad, &p.Precio) == 5) {
 
@@ -147,7 +145,7 @@ void mostrarResultadosBusqueda(int tipo, const char *termino) {
         }
 
         if(coincide) {
-            mostrarProducto(lista[i]);
+            mostrarProducto(lista[i]);  // Ahora está declarada
             encontrados++;
         }
     }
@@ -255,8 +253,6 @@ void eliminarProducto(int pos) {
         printf(RED "Posición inválida.\n" RESET);
         return;
     }
-
-    // Marcar como eliminado (borrado lógico)
     lista[pos].id[0] = '\0';
     guardarEnArchivo();
     printf(GREEN "Producto eliminado.\n" RESET);
@@ -269,42 +265,59 @@ int compararProductos(const void *a, const void *b) {
 }
 
 // RF4: Ordenar productos por nombre (orden alfabético)
+
 void ordenarPorNombre() {
     qsort(lista, cantidad, sizeof(Producto), compararProductos);
 }
 
-void mostrarTablaProductos() {
+void mostrarTodosProductos() {
     ordenarPorNombre();
+
+    printf("\n=== LISTA COMPLETA DE PRODUCTOS ===\n");
     printf("\n+--------------+----------------------------------------+----------------------+-------------+-------------+\n");
     printf("|     ID       |             PRODUCTO                   |        MARCA         |   STOCK     |   Precio    |\n");
     printf("+--------------+----------------------------------------+----------------------+-------------+-------------+\n");
 
-    int i = 0, alertas = 0, productosMostrados = 0;
-    while (i < cantidad) {
-        if (strlen(lista[i].id) > 0) {
-            if (lista[i].Cantidad <= 5) {
-                printf(RED);
-                alertas++;
-            }
+    for (int i = 0; i < cantidad; i++) {
+        if (strlen(lista[i].id) == 0) continue;
+
+        printf("| %-12s | %-38s | %-20s | %-11d | %-11.2f |\n",
+               lista[i].id,
+               lista[i].Producto,
+               lista[i].Marca,
+               lista[i].Cantidad,
+               lista[i].Precio);
+    }
+    printf("+--------------+----------------------------------------+----------------------+-------------+-------------+\n");
+    printf("Total de productos: %d\n", cantidad);
+}
+
+void mostrarAlertasStock() {
+    int alertas = 0;
+
+    printf("\n=== PRODUCTOS CON STOCK BAJO (≤5 unidades) ===\n");
+    printf(RED);
+    printf("\n+--------------+----------------------------------------+----------------------+-------------+-------------+\n");
+    printf("|     ID       |             PRODUCTO                   |        MARCA         |   STOCK     |   Precio    |\n");
+    printf("+--------------+----------------------------------------+----------------------+-------------+-------------+\n");
+
+    for (int i = 0; i < cantidad; i++) {
+        if (strlen(lista[i].id) == 0) continue;
+
+        if (lista[i].Cantidad <= 5) {
             printf("| %-12s | %-38s | %-20s | %-11d | %-11.2f |\n",
                    lista[i].id,
                    lista[i].Producto,
                    lista[i].Marca,
                    lista[i].Cantidad,
                    lista[i].Precio);
-            printf(RESET);
-            productosMostrados++;
+            alertas++;
         }
-        i++;
     }
 
     printf("+--------------+----------------------------------------+----------------------+-------------+-------------+\n");
-    printf("\nTotal de productos registrados: %d\n", cantidad);
-    if (alertas > 0) {
-        printf(RED "Alertas: %d producto(s) con stock bajo (5 unidades o menos)\n" RESET, alertas);
-    }
-    printf(" " RED "* Stock bajo o Producto agotado" RESET);
-    printf(" * Stock normal\n");
+    printf(RESET);
+    printf("Total de alertas: %d\n", alertas);
 }
 
 // RF4: Editar producto existente
@@ -516,17 +529,18 @@ int main() {
 
     while (!salir) {
         limpiarPantalla();
-        printf(GREEN "PAPELERIA *ISSAC*\n" RESET);
+        printf(GREEN "UNIVERSIDAD DE LAS FUERZAS ARMADAS *ESPE*\n" RESET);
         printf(CYAN "FUNDAMENTOS_DE_PROGRAMACION" RESET);
         printf(GREEN "\n=== SISTEMA DE INVENTARIO ===\n" RESET);
         printf("1. Agregar Productos\n");
-        printf("2. Mostrar Productos (Ordenados)\n");
-        printf("3. Buscar Producto\n");
-        printf("4. Eliminar Producto\n");
-        printf("5. Editar Producto\n");
-        printf("6. Registrar Venta\n");
-        printf("7. Ver Ventas del Dia\n");
-        printf("8. Salir\n");
+        printf("2. Mostrar Todos los Productos\n");
+        printf("3. Alertas de Stock Bajo\n");
+        printf("4. Buscar Producto\n");
+        printf("5. Eliminar Producto\n");
+        printf("6. Editar Producto\n");
+        printf("7. Registrar Venta\n");
+        printf("8. Ver Ventas del Dia\n");
+        printf("9. Salir\n");
 
         int opcion;
         char input[10];
@@ -551,13 +565,13 @@ int main() {
                 }
                 break;
             }
-
-            case 2: {
-                mostrarTablaProductos();
+            case 2:
+                mostrarTodosProductos();
                 break;
-            }
-
-            case 3: {
+            case 3:
+                mostrarAlertasStock();
+                break;
+            case 4: {
                 printf("\n=== TIPO DE BÚSQUEDA ===");
                 printf("\n1. Por ID");
                 printf("\n2. Por Nombre");
@@ -576,7 +590,7 @@ int main() {
                 mostrarResultadosBusqueda(tipoBusqueda, valor);
                 break;
             }
-            case 4: {
+            case 5: {
                 printf("Ingrese el ID del producto a eliminar: ");
                 char buffer[20];
                 fgets(buffer, 20, stdin);
@@ -614,7 +628,7 @@ int main() {
                 }
                 break;
             }
-            case 5: {
+            case 6: {
                 printf("Ingrese ID del producto a editar: ");
                 char buffer[20];
                 fgets(buffer, 20, stdin);
@@ -623,17 +637,17 @@ int main() {
                 break;
             }
 
-            case 6: {
+            case 7: {
                 registrarVenta();
                 break;
             }
 
-            case 7: {
+            case 8: {
                 mostrarVentasDelDia();
                 break;
             }
 
-            case 8: {
+            case 9: {
                 printf("Saliendo...\n");
                 printf(GREEN "Creditos: Adriana Astudillo, Sarahi Munoz, Alan Nero :)" RESET);
                 salir = true;
@@ -647,7 +661,7 @@ int main() {
 
         if (!salir) {
             printf("\nPresione Enter para continuar...");
-            while (getchar() != '\n'); // Limpiar buffer y esperar Enter
+            while (getchar() != '\n');
         }
     }
 

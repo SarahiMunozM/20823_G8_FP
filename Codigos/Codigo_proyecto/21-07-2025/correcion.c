@@ -516,7 +516,7 @@ int main() {
 
     while (!salir) {
         limpiarPantalla();
-        printf(GREEN "UNIVERSIDAD DE LAS FUERZAS ARMADAS *ESPE*\n" RESET);
+        printf(GREEN "PAPELERIA *ISSAC*\n" RESET);
         printf(CYAN "FUNDAMENTOS_DE_PROGRAMACION" RESET);
         printf(GREEN "\n=== SISTEMA DE INVENTARIO ===\n" RESET);
         printf("1. Agregar Productos\n");

@@ -414,6 +414,9 @@ void registrarVenta() {
     int pos = buscarProducto(BUSCAR_POR_ID, id);
     if (pos == -1 || strlen(lista[pos].id) == 0) {
         printf(RED "\nError: Producto no encontrado.\n" RESET);
+        printf("Presione Enter para volver al menu...");
+        while(getchar() != '\n');
+        getchar();
         return;
     }
 
@@ -421,59 +424,68 @@ void registrarVenta() {
 
     int cantidadVendida;
     while (1) {
-        printf("Ingrese cantidad a vender: ");
+        printf("Ingrese cantidad a vender (0 para cancelar): ");
         if (scanf("%d", &cantidadVendida) != 1) {
-            printf(RED "Error: Ingrese un numero valido.\n" RESET);
-            while (getchar() != '\n');
+            printf(RED "Error: Ingrese un número válido.\n" RESET);
+            while(getchar() != '\n');
             continue;
         }
-        getchar();
+        while(getchar() != '\n');
 
-        if (cantidadVendida <= 0) {
-            printf(RED "\nError: Cantidad no valida.\n" RESET);
+        if (cantidadVendida == 0) {
+            printf("Venta cancelada.\n");
+            return;
+        } else if (cantidadVendida < 0) {
+            printf(RED "Error: La cantidad no puede ser negativa.\n" RESET);
         } else if (cantidadVendida > lista[pos].Cantidad) {
-            printf(RED "\nError: Stock insuficiente.\n" RESET);
+            printf(RED "Error: Stock insuficiente.\n" RESET);
             printf("Intento vender: %d | Stock disponible: %d\n",
                    cantidadVendida, lista[pos].Cantidad);
         } else {
             break;
         }
     }
+
+    // Proceso de venta
     float precioUnitario = lista[pos].Precio;
     float totalVenta = precioUnitario * cantidadVendida;
-
     lista[pos].Cantidad -= cantidadVendida;
 
     // Registrar en archivo de ventas
-        time_t t = time(NULL);
+    time_t t = time(NULL);
     struct tm *tm_info = localtime(&t);
     char fecha[30];
     strftime(fecha, sizeof(fecha), "%Y-%m-%d %H:%M:%S", tm_info);
 
     FILE *ventas = fopen(ARCHIVO_VENTAS, "a");
-    if (ventas != NULL) {
-        fprintf(ventas, "%s|%s|%d|%.2f|%.2f|%s\n",
-                lista[pos].id,
-                lista[pos].Producto,
-                cantidadVendida,
-                precioUnitario,
-                totalVenta,
-                fecha);
-        fclose(ventas);
-
-        printf(GREEN "\nVenta registrada exitosamente!\n" RESET);
-        printf("\n--- TICKET DE VENTA ---\n");
-        printf("Producto: %s\nCantidad: %d\nPrecio: $%.2f\nTotal: $%.2f\nFecha: %s\n",
-               lista[pos].Producto, cantidadVendida, precioUnitario, totalVenta, fecha);
-        printf("-----------------------\n");
-        printf("Nuevo stock: %d\n", lista[pos].Cantidad);
-    } else {
+    if (ventas == NULL) {
         printf(RED "\nError al guardar la venta.\n" RESET);
         lista[pos].Cantidad += cantidadVendida;
+        guardarEnArchivo();
+        printf("Presione Enter para volver al menu...");
+        getchar();
+        return;
     }
+
+    fprintf(ventas, "%s|%s|%d|%.2f|%.2f|%s\n",
+            lista[pos].id,
+            lista[pos].Producto,
+            cantidadVendida,
+            precioUnitario,
+            totalVenta,
+            fecha);
+    fclose(ventas);
+
+    // Mostrar ticket
+    printf(GREEN "\nVenta registrada exitosamente!\n" RESET);
+    printf("\n--- TICKET DE VENTA ---\n");
+    printf("Producto: %s\nCantidad: %d\nPrecio: $%.2f\nTotal: $%.2f\nFecha: %s\n",
+           lista[pos].Producto, cantidadVendida, precioUnitario, totalVenta, fecha);
+    printf("-----------------------\n");
+    printf("Nuevo stock: %d\n", lista[pos].Cantidad);
+
     guardarEnArchivo();
 }
-
 // RF8: Mostrar las ventas realizadas hoy y el total de productos vendidos
 void mostrarVentasDelDia() {
     FILE *ventas = fopen(ARCHIVO_VENTAS, "r");
@@ -572,7 +584,7 @@ int main() {
                 mostrarAlertasStock();
                 break;
             case 4: {
-                printf("\n=== TIPO DE BÚSQUEDA ===");
+                printf("\n=== TIPO DE BUSQUEDA ===");
                 printf("\n1. Por ID");
                 printf("\n2. Por Nombre");
                 printf("\n3. Por Marca");
@@ -583,7 +595,7 @@ int main() {
                 while(getchar() != '\n');
 
                 char valor[50];
-                printf("Ingrese término de búsqueda: ");
+                printf("Ingrese termino de busqueda: ");
                 fgets(valor, 50, stdin);
                 valor[strcspn(valor, "\n")] = '\0';
 

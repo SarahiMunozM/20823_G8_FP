@@ -1,3 +1,4 @@
+//*---ID---/---Nombre---/---Marca---/---Cantidad---/---Precio---/*
 LanLan-3825|Lana Escolar|Lancer|40|0.50
 LanEst-9975|Lana Escolar|Estudiantil|24|0.50
 MarPel-6299|Marcador Permanente Azul|Pelikan|8|0.75
@@ -27,5 +28,3 @@ TemPel-1792|Tempera Pastel_x12|Pelikan|0|3.40
 TemPel-9754|Tempera Pastel_x6|Pelikan|0|1.95
 TemPel-4324|Tempera x1|Pelikan|26|0.75
 TijSta-8041|Tijera|Staedtler|19|0.35
-1234|Sal|La mas salada|7|2.10
-1234|||0|0.00

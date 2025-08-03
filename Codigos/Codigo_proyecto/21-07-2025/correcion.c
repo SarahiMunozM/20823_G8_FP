@@ -131,7 +131,7 @@ int buscarProducto(int tipoBusqueda, const char *valor) {
     return -1;
 }
 void mostrarResultadosBusqueda(int tipo, const char *termino) {
-    printf("\n=== RESULTADOS DE BÚSQUEDA ===\n");
+    printf("\n=== RESULTADOS DE BUSQUEDA ===\n");
 
     int encontrados = 0;
     for(int i = 0; i < cantidad; i++) {
@@ -174,12 +174,12 @@ void crearProducto(Producto *p) {
     p->id[strcspn(p->id, "\n")] = '\0';
 
     if(strlen(p->id) == 0) {
-        printf(RED "Error: El ID no puede estar vacío. Operación cancelada.\n" RESET);
+        printf(RED "Error: El ID no puede estar vacio. Operacion cancelada.\n" RESET);
         return;
     }
 
     if(!idUnico(p->id)) {
-        printf(RED "Error: ID ya existe. Operación cancelada.\n" RESET);
+        printf(RED "Error: ID ya existe. Operacion cancelada.\n" RESET);
         return;
     }
 
@@ -190,7 +190,7 @@ void crearProducto(Producto *p) {
         p->Producto[strcspn(p->Producto, "\n")] = '\0';
 
         if(strlen(p->Producto) == 0) {
-            printf(RED "Error: El nombre no puede estar vacío.\n" RESET);
+            printf(RED "Error: El nombre no puede estar vacio.\n" RESET);
         } else {
             break;
         }
@@ -215,7 +215,7 @@ void crearProducto(Producto *p) {
         if (scanf("%d", &p->Cantidad) == 1 && p->Cantidad > 0) {
             break;
         } else {
-            printf(RED "Error: Ingrese un número válido.\n" RESET);
+            printf(RED "Error: Ingrese un numero valido.\n" RESET);
             while (getchar() != '\n');
         }
     }
@@ -226,7 +226,7 @@ void crearProducto(Producto *p) {
         if (scanf("%f", &p->Precio) == 1 && p->Precio > 0) {
             break;
         } else {
-            printf(RED "Error: Ingrese un precio válido.\n" RESET);
+            printf(RED "Error: Ingrese un precio valido.\n" RESET);
             while (getchar() != '\n');
         }
     }
@@ -250,7 +250,7 @@ void mostrarProducto(Producto p) {
 // RF3: Eliminar producto
 void eliminarProducto(int pos) {
     if (pos < 0 || pos >= cantidad) {
-        printf(RED "Posición inválida.\n" RESET);
+        printf(RED "Posicion invalida.\n" RESET);
         return;
     }
     lista[pos].id[0] = '\0';
@@ -295,7 +295,7 @@ void mostrarTodosProductos() {
 void mostrarAlertasStock() {
     int alertas = 0;
 
-    printf("\n=== PRODUCTOS CON STOCK BAJO (≤5 unidades) ===\n");
+    printf("\n=== PRODUCTOS CON STOCK BAJO (<5 unidades) ===\n");
     printf(RED);
     printf("\n+--------------+----------------------------------------+----------------------+-------------+-------------+\n");
     printf("|     ID       |             PRODUCTO                   |        MARCA         |   STOCK     |   Precio    |\n");
@@ -401,7 +401,7 @@ void editarProducto(char id[]) {
     }
 
     guardarEnArchivo();
-    printf(GREEN "¡Producto actualizado!\n" RESET);
+    printf(GREEN "Producto actualizado!\n" RESET);
 }
 
 // RF9: Registrar ventas con validación de stock
@@ -541,8 +541,7 @@ int main() {
 
     while (!salir) {
         limpiarPantalla();
-        printf(GREEN "UNIVERSIDAD DE LAS FUERZAS ARMADAS *ESPE*\n" RESET);
-        printf(CYAN "FUNDAMENTOS_DE_PROGRAMACION" RESET);
+        printf(CYAN "====PAPELERIA *ISAAC*====" RESET);
         printf(GREEN "\n=== SISTEMA DE INVENTARIO ===\n" RESET);
         printf("1. Agregar Productos\n");
         printf("2. Mostrar Todos los Productos\n");
@@ -621,7 +620,7 @@ int main() {
                     // Sistema de confirmación
                     printf(RED "\nADVERTENCIA: Esta accion no se puede deshacer\n" RESET);
                     printf(YELLOW "Si esta seguro de eliminar escriba 'ELIMINAR-%s'\n" RESET, buffer);
-                    printf("Confirmación: ");
+                    printf("Confirmacion: ");
 
                     char confirmacion[30];
                     fgets(confirmacion, 30, stdin);
@@ -635,7 +634,7 @@ int main() {
                         guardarEnArchivo();
                         printf(GREEN "\nProducto eliminado.\n" RESET);
                     } else {
-                        printf(YELLOW "\nConfirmación fallida. No se eliminó.\n" RESET);
+                        printf(YELLOW "\nConfirmacion fallida. No se elimino.\n" RESET);
                     }
                 }
                 break;

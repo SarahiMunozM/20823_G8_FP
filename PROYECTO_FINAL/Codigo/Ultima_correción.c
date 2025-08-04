@@ -97,8 +97,9 @@ void guardarEnArchivo() {
 void cargarDesdeArchivo() {
     crearCarpetaInventario();
     FILE *archivo = fopen(ARCHIVO, "r");
+    printf(ORANGE "==== PROCESO DE CREACION Y VERIFICACION DE LA CARPETA INVENTARIO ==== \n"RESET);
     if (!archivo) {
-        printf(YELLOW "\nArchivo de inventario no encontrado. Se creará uno nuevo.\n" RESET);
+        printf(YELLOW "Archivo de inventario no encontrado. Se creará uno nuevo.\n" RESET);
         printf("Presione Enter para continuar...");
         getchar();
         return;
@@ -136,10 +137,10 @@ void cargarDesdeArchivo() {
     fclose(archivo);
 
     if (errores > 0) {
-        printf(RED "\nSe encontraron %d errores en el archivo.\n" RESET, errores);
+        printf(RED "Se encontraron %d errores en el archivo.\n" RESET, errores);
         printf("Algunos productos pueden no haberse cargado correctamente.\n");
     } else {
-        printf(GREEN "\nInventario cargado correctamente. %d productos registrados.\n" RESET, cantidad);
+        printf(GREEN "Inventario cargado correctamente. %d productos registrados.\n" RESET, cantidad);
     }
         printf("Presione Enter para continuar...");
     getchar();
@@ -202,17 +203,19 @@ int idUnico(char id[]) {
 }
 
 void crearProducto(Producto *p) {
+    Producto temp;
+    printf(MAGENTA "==== PROCESO DE CREACION DE UN PRODUCTO EN EL INVENTARIO ====\n"RESET);
     // Validación del ID (no vacío y único)
-    printf("Ingrese ID: ");
-    fgets(p->id, 20, stdin);
-    p->id[strcspn(p->id, "\n")] = '\0';
+    printf("\nIngrese ID: ");
+    fgets(temp.id, 20, stdin);
+    temp.id[strcspn(temp.id, "\n")] = '\0';
 
-    if(strlen(p->id) == 0) {
+    if(strlen(temp.id) == 0) {
         printf(RED "Error: El ID no puede estar vacio. Operacion cancelada.\n" RESET);
         return;
     }
 
-    if(!idUnico(p->id)) {
+    if(!idUnico(temp.id)) {
         printf(RED "Error: ID ya existe. Operacion cancelada.\n" RESET);
         return;
     }
@@ -220,86 +223,82 @@ void crearProducto(Producto *p) {
     // Validación del Nombre
     do {
         printf("Ingrese Nombre del producto (requerido): ");
-        fgets(p->Producto, 50, stdin);
-        p->Producto[strcspn(p->Producto, "\n")] = '\0';
+        fgets(temp.Producto, 50, stdin);
+        temp.Producto[strcspn(temp.Producto, "\n")] = '\0';
 
-        if (strlen(p->Producto) == 0) {
+        if (strlen(temp.Producto) == 0) {
             printf(RED "Error: El nombre es obligatorio.\n" RESET);
         }
-    } while (strlen(p->Producto) == 0);
+    } while (strlen(temp.Producto) == 0);
 
     // Validación de la Marca
     do {
         printf("Ingrese Marca (requerido): ");
-        fgets(p->Marca, 50, stdin);
-        p->Marca[strcspn(p->Marca, "\n")] = '\0';
+        fgets(temp.Marca, 50, stdin);
+        temp.Marca[strcspn(temp.Marca, "\n")] = '\0';
 
-        if (strlen(p->Marca) == 0) {
+        if (strlen(temp.Marca) == 0) {
             printf(RED "Error: La marca es obligatoria.\n" RESET);
         }
-    } while (strlen(p->Marca) == 0);
+    } while (strlen(temp.Marca) == 0);
 
     // Validación de cantidad (permite 0)
     char input[50];
     while (1) {
         printf("Ingrese cantidad (≥ 0): ");
         fgets(input, sizeof(input), stdin);
-        if (sscanf(input, "%d", &p->Cantidad) == 1 && p->Cantidad >= 0) {
+        if (sscanf(input, "%d", &temp.Cantidad) == 1 && temp.Cantidad >= 0) {
             break;
         }
-        printf(RED "Error: Ingrese un número válido.\n" RESET);
+        printf(RED "Error: Ingrese un numero valido.\n" RESET);
     }
 
     // Validación de precio
     while (1) {
         printf("Ingrese precio (> 0): ");
         fgets(input, sizeof(input), stdin);
-        if (sscanf(input, "%f", &p->Precio) == 1 && p->Precio > 0) {
+        if (sscanf(input, "%f", &temp.Precio) == 1 && temp.Precio > 0) {
             break;
         }
         printf(RED "Error: Ingrese un valor positivo.\n" RESET);
     }
-
-    // Manejo de proveedor (opcional)
     printf("¿Desea asignar un proveedor? (s/n): ");
     char opcion = tolower(getchar());
-    while (getchar() != '\n'); // Limpiar el buffer
+    while (getchar() != '\n');
 
     if (opcion == 's') {
         printf("Ingrese Proveedor: ");
-        fgets(p->Proveedor, 50, stdin);
-        p->Proveedor[strcspn(p->Proveedor, "\n")] = '\0';
+        fgets(temp.Proveedor, 50, stdin);
+        temp.Proveedor[strcspn(temp.Proveedor, "\n")] = '\0';
 
-        if (strlen(p->Proveedor) == 0) {
-            printf(YELLOW "Advertencia: No se ingresó proveedor. Se asignará 'Sin proveedor'.\n" RESET);
-            strcpy(p->Proveedor, "Sin proveedor");
+        if (strlen(temp.Proveedor) == 0) {
+            printf(YELLOW "Advertencia: No se ingreso proveedor. Se asignara 'Sin proveedor'.\n" RESET);
+            strcpy(temp.Proveedor, "Sin proveedor");
         }
     } else {
-        strcpy(p->Proveedor, "Sin proveedor");
+        strcpy(temp.Proveedor, "Sin proveedor");
     }
-
-    // Valores por defecto
-    p->Estado = 1;  // Activo por defecto
-    p->EnPausa = 0; // No en pausa por defecto
+    temp.Estado = 1;
+    temp.EnPausa = 0;
 
     // Confirmación final
     printf("\n" GREEN "=== RESUMEN DEL PRODUCTO ===" RESET "\n");
-    printf("ID: %s\n", p->id);
-    printf("Nombre: %s\n", p->Producto);
-    printf("Marca: %s\n", p->Marca);
-    printf("Cantidad: %d\n", p->Cantidad);
-    printf("Precio: %.2f\n", p->Precio);
-    printf("Proveedor: %s\n", p->Proveedor);
+    printf("ID: %s\n", temp.id);
+    printf("Nombre: %s\n", temp.Producto);
+    printf("Marca: %s\n", temp.Marca);
+    printf("Cantidad: %d\n", temp.Cantidad);
+    printf("Precio: %.2f\n", temp.Precio);
+    printf("Proveedor: %s\n", temp.Proveedor);
 
-    printf("\n¿Confirmar creación? (s/n): ");
+    printf("\n¿Confirmar creacion? (s/n): ");
     opcion = tolower(getchar());
-    while (getchar() != '\n'); // Limpiar el buffer
+    while (getchar() != '\n');
 
     if (opcion != 's') {
-        printf(YELLOW "Creación cancelada.\n" RESET);
+        printf(YELLOW "Creacion cancelada.\n" RESET);
         return;
     }
-
+    *p = temp;
     printf(GREEN "\n¡Producto creado exitosamente!\n" RESET);
 }
 
@@ -341,7 +340,7 @@ void ordenarPorNombre() {
 void mostrarTodosProductos() {
     ordenarPorNombre();
 
-    printf("\n=== LISTA COMPLETA DE PRODUCTOS ===\n");
+    printf(LBLUE "\n=== LISTA COMPLETA DE PRODUCTOS ===\n"RESET);
     printf("\n+--------------+----------------------------------------+----------------------+-------------+-------------+\n");
     printf("|     ID       |             PRODUCTO                   |        MARCA         |   STOCK     |   Precio    |\n");
     printf("+--------------+----------------------------------------+----------------------+-------------+-------------+\n");
@@ -363,7 +362,7 @@ void mostrarTodosProductos() {
 void mostrarAlertasStock() {
     int alertas = 0;
 
-    printf("\n=== PRODUCTOS CON STOCK BAJO (<5 unidades) ===\n");
+    printf(ORANGE "\n=== PRODUCTOS CON STOCK BAJO (<5 unidades) ===\n"RESET);
     printf(RED);
     printf("\n+--------------+----------------------------------------+----------------------+-------------+-------------+\n");
     printf("|     ID       |             PRODUCTO                   |        MARCA         |   STOCK     |   Precio    |\n");
@@ -433,7 +432,6 @@ void mostrarProductosEnPausa() {
 
 // RF4: Editar producto existente
 void editarProducto(char id[]) {
-    limpiarPantalla();  // Limpia la consola al iniciar
     int pos = buscarProducto(BUSCAR_POR_ID, id);
     if (pos == -1) {
         printf(RED "\nError: Producto no encontrado.\n" RESET);
@@ -458,7 +456,7 @@ void editarProducto(char id[]) {
         printf("6. Estado      [%s%s%s]\n", CYAN, lista[pos].Estado ? "ACTIVO" : "INACTIVO", RESET);
         printf("7. Pausa       [%s%s%s]\n", CYAN, lista[pos].EnPausa ? "EN PAUSA" : "DISPONIBLE", RESET);
         printf("0. %sGuardar y salir%s\n", GREEN, RESET);
-        printf("\nSeleccione campo a editar (0 para terminar): ");
+        printf("\nSeleccione campo a editar (0 / enter para terminar): ");
 
         fgets(input, sizeof(input), stdin);
         sscanf(input, "%d", &opcion);
@@ -496,7 +494,7 @@ void editarProducto(char id[]) {
                         break;
 
                     case 2:
-                        strcpy(lista[pos].Proveedor, "N/A"); // O "" si prefieres
+                        strcpy(lista[pos].Proveedor, "Sin proveedor"); // O "" si prefieres
                         printf(GREEN "Proveedor eliminado.\n" RESET);
                         break;
 
@@ -565,15 +563,13 @@ void editarProducto(char id[]) {
         }
 
     } while(opcion != 0);
-
-    // Limpia el buffer antes de salir
-    while(getchar() != '\n');
 }
 
 // RF9: Registrar ventas con validación de stock
 void registrarVenta() {
     char id[20];
-    printf("Ingrese ID del producto a vender: ");
+    printf(ORANGE "==== REGISTRO DE VENTAS DE LOS PRODUCTOS DEL INVENTARIO ==== \n"RESET);
+    printf("\nIngrese ID del producto a vender: ");
     fgets(id, 20, stdin);
     id[strcspn(id, "\n")] = '\0';
 
@@ -584,25 +580,25 @@ void registrarVenta() {
         return;
     }
 
-    printf("Stock disponible: %d\n", lista[pos].Cantidad);
+    printf("\nStock disponible: %d\n", lista[pos].Cantidad);
 
     int cantidadVendida;
     while (1) {
         printf("Ingrese cantidad a vender (0 para cancelar): ");
         if (scanf("%d", &cantidadVendida) != 1) {
-            printf(RED "Error: Ingrese un número válido.\n" RESET);
+            printf(RED "\nError: Ingrese un número válido.\n" RESET);
             continue;
         }
         while(getchar() != '\n');
 
         if (cantidadVendida == 0) {
-            printf("Venta cancelada.\n");
+            printf(RED "Venta cancelada.\n" RESET);
             return;
         } else if (cantidadVendida < 0) {
             printf(RED "Error: La cantidad no puede ser negativa.\n" RESET);
         } else if (cantidadVendida > lista[pos].Cantidad) {
             printf(RED "Error: Stock insuficiente.\n" RESET);
-            printf("Intento vender: %d | Stock disponible: %d\n",
+            printf("\nIntento vender: %d | Stock disponible: %d\n",
                    cantidadVendida, lista[pos].Cantidad);
         } else {
             break;
@@ -641,7 +637,7 @@ void registrarVenta() {
 
     // Mostrar ticket
     printf(GREEN "\nVenta registrada exitosamente!\n" RESET);
-    printf("\n--- TICKET DE VENTA ---\n");
+    printf(MAGENTA"\n--- TICKET DE VENTA ---\n"RESET);
     printf("Producto: %s\nCantidad: %d\nPrecio: $%.2f\nTotal: $%.2f\nFecha: %s\n",
            lista[pos].Producto, cantidadVendida, precioUnitario, totalVenta, fecha);
     printf("-----------------------\n");
@@ -652,6 +648,7 @@ void registrarVenta() {
 // RF8: Mostrar las ventas realizadas hoy y el total de productos vendidos
 void mostrarVentasDelDia() {
     FILE *ventas = fopen(ARCHIVO_VENTAS, "r");
+    printf(ORANGE "==== HISTORIAL DE VENTAS REALIZADAS ==== \n"RESET);
     if (ventas == NULL) {
         printf(RED "No hay registro de ventas.\n" RESET);
         return;
@@ -682,8 +679,8 @@ void mostrarVentasDelDia() {
     }
     fclose(ventas);
     printf("-----------------------------------\n");
-    printf("Total productos vendidos hoy: %d\n", totalVendidos);
-    printf(GREEN "Total ganancias hoy: $%.2f\n" RESET, totalVentas);
+    printf("\nTotal productos vendidos hoy: %d\n", totalVendidos);
+    printf(GREEN "\nTotal ganancias hoy: $%.2f\n" RESET, totalVentas);
 }
 void cambiarEstadoProducto() {
     char id[20];
@@ -752,6 +749,7 @@ int main() {
 
         switch(opcion) {
             case 1: {
+                limpiarPantalla();
                 if (cantidad < MAX_PRODUCTOS) {
                     crearProducto(&lista[cantidad]);
                     cantidad++;
@@ -760,15 +758,21 @@ int main() {
                     printf(RED "Limite de productos alcanzado.\n" RESET);
                 }
                 break;
+                while(getchar() != '\n');
             }
             case 2:
+                limpiarPantalla();
                 mostrarTodosProductos();
                 break;
+                while(getchar() != '\n');
             case 3:
+                limpiarPantalla();
                 mostrarAlertasStock();
                 break;
+                while(getchar() != '\n');
             case 4: {
-                limpiarPantalla();  // Limpia la consola al iniciar
+                limpiarPantalla();
+                printf(LBLUE "==== PROCESO DE BUSQUEDA DEL PRODUCTO EN EL INVENTARIO ==== \n"RESET);
                 printf(MAGENTA "\n=== TIPO DE BUSQUEDA ===" RESET);
                 printf("\n1. Por ID");
                 printf("\n2. Por Nombre");
@@ -780,16 +784,17 @@ int main() {
                 while(getchar() != '\n');
 
                 char valor[50];
-                printf("Ingrese termino de busqueda: ");
+                printf("\nIngrese termino de busqueda: ");
                 fgets(valor, 50, stdin);
                 valor[strcspn(valor, "\n")] = '\0';
 
                 mostrarResultadosBusqueda(tipoBusqueda, valor);
                 break;
-                // Limpia el buffer antes de salir
                 while(getchar() != '\n');
             }
             case 5: {
+                limpiarPantalla();
+                printf(LBLUE "==== PROCESO DE ELIMINACION DEL PRODUCTO EN EL INVENTARIO ==== \n"RESET);
                 printf("Ingrese el ID del producto a eliminar: ");
                 char buffer[20];
                 fgets(buffer, 20, stdin);
@@ -826,37 +831,51 @@ int main() {
                     }
                 }
                 break;
+                while(getchar() != '\n');
             }
             case 6: {
+                limpiarPantalla();
+                printf(ORANGE "==== PROCESO DE EDICION DEL PRODUCTO EN EL INVENTARIO ==== \n"RESET);
                 printf("Ingrese ID del producto a editar: ");
                 char buffer[20];
                 fgets(buffer, 20, stdin);
                 buffer[strcspn(buffer, "\n")] = '\0';
                 editarProducto(buffer);
                 break;
+                while(getchar() != '\n');
             }
 
             case 7: {
+                limpiarPantalla();
                 registrarVenta();
                 break;
+                while(getchar() != '\n');
             }
 
             case 8: {
+                limpiarPantalla();
                 mostrarVentasDelDia();
                 break;
+                while(getchar() != '\n');
             }
             case 9:
+                limpiarPantalla();
                 mostrarEstadoRestock();
                 break;
             case 10:
+                limpiarPantalla();
                 mostrarProductosEnPausa();
                 break;
+                while(getchar() != '\n');
 
             case 11: {
+                limpiarPantalla();
+                printf(ORANGE "==== lOS DATOS SE HAN GURADADO EXITOSAMENTE EN EL INVENTARIO ==== \n"RESET);
                 printf("Saliendo...\n");
                 printf(GREEN "Creditos: Adriana Astudillo, Sarahi Munoz, Alan Nero :)" RESET);
                 salir = true;
                 break;
+                while(getchar() != '\n');
             }
 
             default: {

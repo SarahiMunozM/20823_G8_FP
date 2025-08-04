@@ -1,0 +1,30 @@
+//*---ID---/---Nombre---/---Marca---/---Cantidad---/---Precio---/*
+LanLan-3825|Lana Escolar|Lancer|40|0.50
+LanEst-9975|Lana Escolar|Estudiantil|24|0.50
+MarPel-6299|Marcador Permanente Azul|Pelikan|8|0.75
+MarBes-9118|Marcador Permanente Azul Economico|Bester|10|0.50
+MarPel-7818|Marcador Permanente Negro|Pelikan|0|0.75
+MarBes-6430|Marcador Permanente Negro Economico|Bester|0|0.50
+MarPel-5410|Marcador Permanente Rojo|Pelikan|11|0.75
+MarBes-2259|Marcador Permanente Rojo Economico|Bester|19|0.50
+MarPel-4124|Marcador Permanente Verde|Pelikan|20|0.75
+MarBes-8553|Marcador Permanente Verde Economico|Bester|1|0.50
+MarPel-8887|Marcador Tiza Liquida Azul|Pelikan|10|2.30
+MarBes-8764|Marcador Tiza Liquida Azul Economico|Bester|0|0.50
+MarPel-4052|Marcador Tiza Liquida Celeste|Pelikan|1|0.75
+MarPel-9032|Marcador Tiza Liquida Morado|Pelikan|2|0.75
+MarPel-8074|Marcador Tiza Liquida Naranja|Pelikan|16|0.75
+MarPel-9962|Marcador Tiza Liquida Negro|Pelikan|0|0.75
+MarBes-6695|Marcador Tiza Liquida Negro Economico|Bester|0|0.50
+MarPel-7789|Marcador Tiza Liquida Rojo|Pelikan|0|0.75
+MarBes-7938|Marcador Tiza Liquida Rojo Economico|Bester|14|0.50
+MarPel-1990|Marcador Tiza Liquida Rosado|Pelikan|11|0.75
+MarPel-6845|Marcador Tiza Liquida Verde|Pelikan|5|0.75
+PisLin-1219|Pistola de silicona|Lineazul|4|4.20
+RegLin-8863|Reglas Flexible|Lineazul|23|0.35
+TemLio-6708|Tempera Acrilica_x6|Lion|4|2.10
+TemLin-6026|Tempera Economica_x12|Lineazul|6|1.30
+TemPel-1792|Tempera Pastel_x12|Pelikan|0|3.40
+TemPel-9754|Tempera Pastel_x6|Pelikan|0|1.95
+TemPel-4324|Tempera x1|Pelikan|26|0.75
+TijSta-8041|Tijera|Staedtler|19|0.35
